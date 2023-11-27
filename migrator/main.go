@@ -1,12 +1,11 @@
 package main
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/migrator/migrator"
+	"github.com/datacommand2/cdm-cloud/common"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/migrator/migrator"
 
-	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"

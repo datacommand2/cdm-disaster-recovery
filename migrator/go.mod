@@ -1,13 +1,13 @@
-module 10.1.1.220/cdm/cdm-disaster-recovery/daemons/migrator
+module github.com/datacommand2/cdm-disaster-recovery/migrator
 
 go 1.14
 
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
-	10.1.1.220/cdm/cdm-center/services/cluster-manager v0.1.0-rc8.0.20230907055220-0d9795bc2b70
-	10.1.1.220/cdm/cdm-cloud/common v1.0.4
-	10.1.1.220/cdm/cdm-disaster-recovery/common v0.0.0-20230907052223-cda694444826
+	github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231127012344-99c2aa35af23
+    github.com/datacommand2/cdm-cloud/common v0.0.0-20231124062432-069e9eb1c852
+    github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231127004446-b287a4110507
 	github.com/jinzhu/gorm v1.9.16
 	github.com/micro/go-micro/v2 v2.9.1
 )
