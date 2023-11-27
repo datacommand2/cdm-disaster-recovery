@@ -6,17 +6,17 @@ import (
 	"os/signal"
 	"syscall"
 
-	"10.1.1.220/cdm/cdm-cloud/common"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/environment"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/volume"
+	"github.com/datacommand2/cdm-cloud/common"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/environment"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/volume"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/config/cmd"
 	"github.com/micro/go-micro/v2/registry"
 
-	_ "10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/environment/ceph" // register ceph environment
-	_ "10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/volume/ceph"      // register ceph volume
+	_ "github.com/datacommand2/cdm-disaster-recovery/mirror/environment/ceph" // register ceph environment
+	_ "github.com/datacommand2/cdm-disaster-recovery/mirror/volume/ceph"      // register ceph volume
 
 	_ "net/http/pprof"
 )
