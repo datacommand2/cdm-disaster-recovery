@@ -1,11 +1,11 @@
 package snapshot
 
 import (
-	"10.1.1.220/cdm/cdm-center/services/cluster-manager/storage"
-	"10.1.1.220/cdm/cdm-center/services/cluster-manager/volume"
-	"10.1.1.220/cdm/cdm-cloud/common/store"
-	"10.1.1.220/cdm/cdm-cloud/common/test/helper"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/mirror"
+	"github.com/datacommand2/cdm-center/cluster-manager/storage"
+	"github.com/datacommand2/cdm-center/cluster-manager/volume"
+	"github.com/datacommand2/cdm-cloud/common/store"
+	"github.com/datacommand2/cdm-cloud/common/test/helper"
+	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
