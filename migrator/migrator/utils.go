@@ -1,9 +1,9 @@
 package migrator
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common/broker"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/migrator"
+	"github.com/datacommand2/cdm-cloud/common/broker"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 
 	"encoding/json"
 	"sync"

@@ -1,12 +1,12 @@
 package migrator
 
 import (
-	cmsClient "10.1.1.220/cdm/cdm-center/services/cluster-manager/client"
-	centerConstant "10.1.1.220/cdm/cdm-center/services/cluster-manager/constant"
-	cms "10.1.1.220/cdm/cdm-center/services/cluster-manager/proto"
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/migrator"
+	cmsClient "github.com/datacommand2/cdm-center/cluster-manager/client"
+	centerConstant "github.com/datacommand2/cdm-center/cluster-manager/constant"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
+	"github.com/datacommand2/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/client/grpc"

@@ -1,14 +1,14 @@
 package migrator
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common/broker"
-	"10.1.1.220/cdm/cdm-cloud/common/database"
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	"10.1.1.220/cdm/cdm-cloud/common/store"
-	"10.1.1.220/cdm/cdm-cloud/common/test/helper"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/migrator"
+	"github.com/datacommand2/cdm-cloud/common/broker"
+	"github.com/datacommand2/cdm-cloud/common/database"
+	"github.com/datacommand2/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	"github.com/datacommand2/cdm-cloud/common/store"
+	"github.com/datacommand2/cdm-cloud/common/test/helper"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 
 	"github.com/jinzhu/gorm"
 
