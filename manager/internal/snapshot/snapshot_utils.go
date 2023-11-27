@@ -5,7 +5,6 @@ import (
 	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
-	sms "github.com/datacommand2/cdm-disaster-recovery/snapshot/proto"
 )
 
 // CreateSnapshot 는 보호 그룹 스냅샷, 복구 계획 스냅샷, 볼륨 스냅샷 생성 요청 함수
@@ -67,7 +66,7 @@ func CheckVolumeHasParent(ctx context.Context, vol *cms.ClusterVolume) (bool, er
 	return false, nil
 }
 
-func FlattenVolumes(ctx context.Context, volList []*cms.ClusterVolume) (*sms.FlattenVolumeResponse, error) {
-	//TODO: Not implemented
-	return nil, nil
-}
+//func FlattenVolumes(ctx context.Context, volList []*cms.ClusterVolume) (*sms.FlattenVolumeResponse, error) {
+//	//TODO: Not implemented
+//	return nil, nil
+//}
