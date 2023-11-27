@@ -1,6 +1,6 @@
 package migrator
 
-import drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+import drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 
 // RecoveryJobMessage 재해복구작업의 상태값 저장하는 메시지
 type RecoveryJobMessage struct {

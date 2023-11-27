@@ -12,7 +12,7 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/sync"
 	identity "github.com/datacommand2/cdm-cloud/services/identity/proto"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/google/uuid"
 	"path"
 	"regexp"
