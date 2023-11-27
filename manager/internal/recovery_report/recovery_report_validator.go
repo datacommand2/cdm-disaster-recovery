@@ -3,15 +3,15 @@ package recoveryreport
 import (
 	"context"
 	"github.com/asaskevich/govalidator"
-	cmsConstant "github.com/datacommand2/cdm-center/services/cluster-manager/constant"
+	cmsConstant "github.com/datacommand2/cdm-center/cluster-manager/constant"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 )

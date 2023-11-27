@@ -1,7 +1,7 @@
 package recoveryplan
 
 import (
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
 )
 

@@ -7,9 +7,9 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_job/queue/builder"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_job/queue/builder"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 
 	"context"
 	"time"

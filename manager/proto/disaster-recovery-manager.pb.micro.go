@@ -5,7 +5,7 @@ package drms
 
 import (
 	fmt "fmt"
-	_ "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	_ "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	_ "github.com/datacommand2/cdm-cloud/services/identity/proto"
 	_ "github.com/datacommand2/cdm-cloud/services/scheduler/proto"
 	proto "github.com/golang/protobuf/proto"

@@ -2,12 +2,12 @@ package builder
 
 import (
 	"context"
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
 )
 
 func (b *TaskBuilder) buildRouterCreateTask(ctx context.Context, txn store.Txn, router *cms.ClusterRouter) (string, error) {

@@ -8,7 +8,7 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-cloud/common/sync"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
 const recoveryJobBuilderLock = "dr.recovery.job.recovery_cluster/%d"

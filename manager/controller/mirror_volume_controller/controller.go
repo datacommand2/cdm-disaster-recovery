@@ -7,9 +7,9 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/test/helper"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/controller"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	recoveryplan "github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_plan"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/controller"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	recoveryplan "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan"
 	"github.com/jinzhu/gorm"
 	"time"
 )

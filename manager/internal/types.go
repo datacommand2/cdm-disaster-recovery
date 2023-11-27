@@ -1,8 +1,8 @@
 package internal
 
 import (
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
 // UnavailableInstance 재해 복구가 불가능한 인스턴스

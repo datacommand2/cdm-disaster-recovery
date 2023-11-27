@@ -9,9 +9,9 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/metadata"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/cluster"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/cluster"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"time"
 )
 

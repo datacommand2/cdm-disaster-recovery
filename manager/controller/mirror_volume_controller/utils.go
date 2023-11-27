@@ -2,17 +2,17 @@ package mirrorvolumecontroller
 
 import (
 	"context"
-	"github.com/datacommand2/cdm-center/services/cluster-manager/storage"
-	"github.com/datacommand2/cdm-center/services/cluster-manager/volume"
+	"github.com/datacommand2/cdm-center/cluster-manager/storage"
+	"github.com/datacommand2/cdm-center/cluster-manager/volume"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	recoveryPlan "github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_plan"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	recoveryPlan "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
 	"reflect"
 )

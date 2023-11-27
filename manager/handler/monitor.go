@@ -1,7 +1,7 @@
 package handler
 
 import (
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-cloud/common/broker"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
@@ -9,9 +9,9 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/test/helper"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	recoveryJob "github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_job"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	recoveryJob "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_job"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 
 	"github.com/jinzhu/gorm"
 

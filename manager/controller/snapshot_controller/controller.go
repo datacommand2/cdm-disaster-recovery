@@ -9,9 +9,9 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-cloud/common/test/helper"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/controller"
-	protectionGroup "github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/protection_group"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/snapshot"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/controller"
+	protectionGroup "github.com/datacommand2/cdm-disaster-recovery/manager/internal/protection_group"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/snapshot"
 	"github.com/jinzhu/gorm"
 	"strconv"
 )

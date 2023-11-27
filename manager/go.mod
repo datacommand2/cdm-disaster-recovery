@@ -2,6 +2,10 @@ module github.com/datacommand2/cdm-disaster-recovery/manager
 
 go 1.14
 
+replace (
+	github.com/datacommand2/cdm-disaster-recovery => github.com/datacommand2/cdm-disaster-recovery v0.0.0-20231127014222-7809a3dfe1c1
+)
+
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/datacommand2/cdm-cloud/common v0.0.0-20231116073359-755996e851e1

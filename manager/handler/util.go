@@ -7,7 +7,7 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-cloud/common/metadata"
 	"github.com/datacommand2/cdm-disaster-recovery/common/util"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
 )
 
 func validateRequest(ctx context.Context) error {

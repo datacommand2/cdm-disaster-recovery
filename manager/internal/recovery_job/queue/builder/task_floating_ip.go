@@ -6,8 +6,8 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
 func (b *TaskBuilder) buildFloatingIPCreateTask(ctx context.Context, txn store.Txn, plan *drms.FloatingIPRecoveryPlan) (string, error) {

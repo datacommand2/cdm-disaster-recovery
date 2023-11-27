@@ -1,10 +1,10 @@
 package builder
 
 import (
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
 // TaskBuilderOption 는 clear task 생성 옵션 함수이다.

@@ -1,8 +1,8 @@
 package protectiongroup
 
 import (
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
 )
 

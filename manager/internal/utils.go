@@ -15,7 +15,7 @@ import (
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
 )
 

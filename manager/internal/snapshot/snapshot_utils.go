@@ -2,10 +2,10 @@ package snapshot
 
 import (
 	"context"
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
-	sms "github.com/datacommand2/cdm-disaster-recovery/services/snapshot/proto"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
+	sms "github.com/datacommand2/cdm-disaster-recovery/snapshot/proto"
 )
 
 // CreateSnapshot 는 보호 그룹 스냅샷, 복구 계획 스냅샷, 볼륨 스냅샷 생성 요청 함수

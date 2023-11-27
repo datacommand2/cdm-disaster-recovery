@@ -3,7 +3,7 @@ syntax = "proto3";
 package drms;
 
 import "google/api/annotations.proto";
-import "github.com/datacommand2/cdm-center/services/cluster-manager/proto/cluster-manager.proto";
+import "github.com/datacommand2/cdm-center/cluster-manager/proto/cluster-manager.proto";
 import "github.com/datacommand2/cdm-cloud/services/scheduler/proto/schedule.proto";
 import "github.com/datacommand2/cdm-cloud/services/identity/proto/identity.proto";
 import "google/protobuf/wrappers.proto";

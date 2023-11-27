@@ -2,7 +2,7 @@ package instancetemplate
 
 import (
 	"context"
-	proto1 "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	proto1 "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	commonConstant "github.com/datacommand2/cdm-cloud/common/constant"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
@@ -10,8 +10,8 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/metadata"
 	identity "github.com/datacommand2/cdm-cloud/services/identity/proto"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/jinzhu/gorm"
 	"github.com/micro/go-micro/v2/client/grpc"

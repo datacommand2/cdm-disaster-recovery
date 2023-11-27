@@ -3,16 +3,16 @@ package builder
 import (
 	"context"
 	"fmt"
-	"github.com/datacommand2/cdm-center/services/cluster-manager/storage"
-	"github.com/datacommand2/cdm-center/services/cluster-manager/volume"
+	"github.com/datacommand2/cdm-center/cluster-manager/storage"
+	"github.com/datacommand2/cdm-center/cluster-manager/volume"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-cloud/common/store"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/snapshot"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/snapshot"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
 var volumeMetadata map[string]string

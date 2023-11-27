@@ -7,7 +7,7 @@
 package drms
 
 import (
-	proto1 "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	proto1 "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	proto2 "github.com/datacommand2/cdm-cloud/services/identity/proto"
 	proto3 "github.com/datacommand2/cdm-cloud/services/scheduler/proto"
 	proto "github.com/golang/protobuf/proto"

@@ -2,16 +2,16 @@ package clusterrelationship
 
 import (
 	"context"
-	centerConstant "github.com/datacommand2/cdm-center/services/cluster-manager/constant"
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
+	centerConstant "github.com/datacommand2/cdm-center/cluster-manager/constant"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/cluster"
-	recoveryPlan "github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_plan"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/cluster"
+	recoveryPlan "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/jinzhu/gorm"
 )

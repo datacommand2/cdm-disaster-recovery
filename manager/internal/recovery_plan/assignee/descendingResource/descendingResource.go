@@ -1,9 +1,9 @@
 package descendingresource
 
 import (
-	cms "github.com/datacommand2/cdm-center/services/cluster-manager/proto"
-	"github.com/datacommand2/cdm-disaster-recovery/services/manager/internal/recovery_plan/assignee"
-	drms "github.com/datacommand2/cdm-disaster-recovery/services/manager/proto"
+	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
+	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan/assignee"
+	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/copier"
 	"sort"
 )
