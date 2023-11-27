@@ -1,13 +1,13 @@
 package internal
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common/database"
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
-	"10.1.1.220/cdm/cdm-cloud/common/event"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	cloudMeta "10.1.1.220/cdm/cdm-cloud/common/metadata"
-	"10.1.1.220/cdm/cdm-cloud/common/test/helper"
 	"context"
+	"github.com/datacommand2/cdm-cloud/common/database"
+	"github.com/datacommand2/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-cloud/common/event"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	cloudMeta "github.com/datacommand2/cdm-cloud/common/metadata"
+	"github.com/datacommand2/cdm-cloud/common/test/helper"
 	"github.com/jinzhu/gorm"
 )
 

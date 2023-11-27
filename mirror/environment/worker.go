@@ -4,11 +4,11 @@ import (
 	"sync"
 	"time"
 
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/constant"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/mirror"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/internal"
+	"github.com/datacommand2/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
+	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/internal"
 )
 
 var workerMapLock = sync.Mutex{}

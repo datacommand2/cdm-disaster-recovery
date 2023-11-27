@@ -1,13 +1,13 @@
 package ceph
 
 import (
-	"10.1.1.220/cdm/cdm-center/services/cluster-manager/storage"
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/internal/ceph"
+	"github.com/datacommand2/cdm-center/cluster-manager/storage"
+	"github.com/datacommand2/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/internal/ceph"
 	"github.com/micro/go-micro/v2/logger"
 
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/mirror"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/environment"
+	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/environment"
 	"github.com/shirou/gopsutil/process"
 	"os"
 	"os/exec"

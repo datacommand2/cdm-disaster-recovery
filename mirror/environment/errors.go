@@ -1,8 +1,8 @@
 package environment
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
 	"fmt"
+	"github.com/datacommand2/cdm-cloud/common/errors"
 )
 
 var (

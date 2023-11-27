@@ -1,7 +1,7 @@
 package ceph
 
 import (
-	"10.1.1.220/cdm/cdm-cloud/common/errors"
+	"github.com/datacommand2/cdm-cloud/common/errors"
 )
 
 var (

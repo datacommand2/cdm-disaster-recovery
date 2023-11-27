@@ -1,10 +1,10 @@
 package environment
 
 import (
-	"10.1.1.220/cdm/cdm-center/services/cluster-manager/storage"
-	"10.1.1.220/cdm/cdm-cloud/common/logger"
-	"10.1.1.220/cdm/cdm-disaster-recovery/common/mirror"
-	"10.1.1.220/cdm/cdm-disaster-recovery/daemons/mirror/internal"
+	"github.com/datacommand2/cdm-center/cluster-manager/storage"
+	"github.com/datacommand2/cdm-cloud/common/logger"
+	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
+	"github.com/datacommand2/cdm-disaster-recovery/mirror/internal"
 )
 
 // Storage storage type 에 대한 볼륨 복제 관련 인터 페이스
