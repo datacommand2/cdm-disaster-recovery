@@ -6,7 +6,7 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
-	github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231127065214-299269158e0f
+	github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231128014305-c272aecc14ff
 	github.com/datacommand2/cdm-cloud/common v0.0.0-20231127061122-07e02be5bd0c
 	github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231127061639-e680b139acd3
 	github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231116073359-755996e851e1
