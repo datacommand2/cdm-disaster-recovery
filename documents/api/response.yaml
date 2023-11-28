@@ -1,0 +1,14 @@
+Message:
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            $ref: 'schema.yaml#/Message'
+      example: {
+        message: {
+          code: "message code",
+          contents: "message contents"
+        }
+      }

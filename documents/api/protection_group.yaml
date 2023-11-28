@@ -1,0 +1,770 @@
+UnprotectedInstances:
+  get:
+    summary: 클러스터 비보호 인스턴스 목록 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09101
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: 'parameter.yaml#/Pagination/Limit'
+      - $ref: 'parameter.yaml#/Pagination/Offset'
+      - $ref: '#/components/parameters/ClusterID'
+      - $ref: '#/components/parameters/TenantID'
+      - $ref: '#/components/parameters/AvailabilityZoneID'
+      - $ref: '#/components/parameters/HypervisorID'
+      - $ref: '#/components/parameters/InstanceName'
+    responses:
+      200:
+        $ref: '#/components/responses/Instances'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Resource:
+  get:
+    summary: 보호그룹 목록 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09011
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: 'parameter.yaml#/Pagination/Limit'
+      - $ref: 'parameter.yaml#/Pagination/Offset'
+      - $ref: '#/components/parameters/ProtectionClusterID'
+      - $ref: '#/components/parameters/ProtectionClusterTypeCode'
+      - $ref: '#/components/parameters/OwnerGroup'
+      - $ref: '#/components/parameters/Name'
+    responses:
+      200:
+        $ref: '#/components/responses/ProtectionGroups'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  post:
+    summary: 보호그룹 등록
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09031
+    tags:
+      - "Protection Group"
+    requestBody:
+      $ref: '#/components/requestBodies/ProtectionGroup'
+    responses:
+      201:
+        $ref: '#/components/responses/ProtectionGroup'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      409:
+        description: Conflict
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Object:
+  get:
+    summary: 보호그룹 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09021
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    responses:
+      200:
+        $ref: '#/components/responses/ProtectionGroup'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  patch:
+    summary: 보호그룹 수정
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09041
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    requestBody:
+      $ref: '#/components/requestBodies/ProtectionGroup'
+    responses:
+      200:
+        $ref: '#/components/responses/ProtectionGroup'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      409:
+        description: Conflict
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  delete:
+    summary: 보호그룹 삭제
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09051
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Snapshot:
+  get:
+    summary: 보호그룹 스냅샷 목록 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09061
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    responses:
+      200:
+        $ref: '#/components/responses/Snapshots'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  post:
+    summary: 보호그룹 스냅샷 추가
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09071
+    tags:
+      - "Protection Group"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    responses:
+      201:
+        $ref: '#/components/responses/SnapshotMessage'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  parameters:
+    ClusterID:
+      in: query
+      name: cluster_id
+      description: 클러스터 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    TenantID:
+      in: query
+      name: cluster_tenant_id
+      description: 클러스터 테넌트 ID
+      schema:
+        type: integer
+        format: uint64
+
+    AvailabilityZoneID:
+      in: query
+      name: cluster_availability_zone_id
+      description: 클러스터 가용구역 ID
+      schema:
+        type: integer
+        format: uint64
+
+    HypervisorID:
+      in: query
+      name: cluster_hypervisor_id
+      description: 클러스터 Hypervisor ID
+      schema:
+        type: integer
+        format: uint64
+
+    VolumeID:
+      in: query
+      name: cluster_volume_id
+      description: 클러스터 볼륨 ID
+      schema:
+        type: integer
+        format: uint64
+
+    InstanceName:
+      in: query
+      name: name
+      description: 인스턴스 이름
+      schema:
+        type: string
+
+    ProtectionGroupID:
+      in: path
+      name: group_id
+      description: 보호그룹 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    ProtectionClusterID:
+      in: query
+      name: protection_cluster_id
+      description: 보호대상 클러스터 ID
+      schema:
+        type: integer
+        format: uint64
+
+    ProtectionClusterTypeCode:
+      in: query
+      name: protection_cluster_type_code
+      description: 보호대상 클러스터 종류
+      schema:
+        type: string
+        enum:
+          - "cluster.type.openstack"
+          - "cluster.type.openshift"
+          - "cluster.type.kubernetes"
+          - "cluster.type.vmware"
+
+    OwnerGroup:
+      in: query
+      name: owner_group_id
+      description: 보호그룹 원본 클러스터의 Owner 그룹 ID
+      schema:
+        type: integer
+        format: uint64
+
+    Name:
+      in: query
+      name: name
+      description: 보호그룹 이름
+      schema:
+        type: string
+
+  requestBodies:
+    ProtectionGroup:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              group:
+                $ref: 'schema.yaml#/ProtectionGroup'
+          examples:
+            creation:
+              value: {
+                group: {
+                  protection_cluster: { id: 1 },
+                  name: "대전센터 OpenStack #001 의 ERP 시스템",
+                  remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위한 가상머신 그룹",
+                  recovery_point_objective_type: "recovery.point.objective.type.minute",
+                  recovery_point_objective: 15,
+                  recovery_time_objective: 30,
+                  snapshot_interval_type: "snapshot.interval.type.minutely",
+                  snapshot_interval: 10,
+                  instances: [
+                    { id: 1 },
+                    { id: 2 }
+                  ]
+                }
+              }
+            modification:
+              value: {
+                group: {
+                  id: 1,
+                  protection_cluster: { id: 1 },
+                  name: "대전센터 OpenStack #001 의 ERP 시스템",
+                  remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위한 가상머신 그룹",
+                  recovery_point_objective_type: "recovery.point.objective.type.day",
+                  recovery_point_objective: 15,
+                  recovery_time_objective: 30,
+                  snapshot_interval_type: "snapshot.interval.type.minutely",
+                  snapshot_interval: 10,
+                  instances: [
+                    { id: 1 },
+                    { id: 2 }
+                  ]
+                }
+              }
+
+  responses:
+    Instances:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              instances:
+                type: array
+                items:
+                  $ref: 'http://10.1.1.220/cdm/cdm-center/documents/-/raw/master/api/cdm-cluster-manager/schema.yaml#/ClusterInstance'
+              pagination:
+                $ref: 'schema.yaml#/Pagination'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            instances: [
+              {
+                id: 1, uuid: "08b3bf8b-0e17-41fa-9836-acbec782716b",
+                name: "instance #001",
+                cluster: {
+                  id: 1, name: "대전센터 OpenStack #001",
+                  type_code: "cluster.type.openstack",
+                  remarks: "대전센터 OpenStack #001"
+                },
+                tenant: {
+                  id: 1, name: "admin", enabled: true,
+                  uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25"
+                },
+                availability_zone: {
+                  id: 1, name: "nova"
+                },
+                hypervisor: {
+                  id: 1, hostname: "localhost", ip_address: "1.1.1.1",
+                  vcpu_total_cnt: 32, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000
+                }
+              },
+              {
+                id: 2, uuid: "042a8507-064b-43bd-9db4-eccbd276ba82",
+                name: "instance #002",
+                cluster: {
+                  id: 1, name: "대전센터 OpenStack #001",
+                  type_code: "cluster.type.openstack",
+                  remarks: "대전센터 OpenStack #001"
+                },
+                tenant: {
+                  id: 1, name: "admin", enabled: true,
+                  uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25"
+                },
+                availability_zone: {
+                  id: 1, name: "nova"
+                },
+                hypervisor: {
+                  id: 1, hostname: "localhost", ip_address: "1.1.1.1",
+                  vcpu_total_cnt: 32, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000
+                }
+              }
+            ],
+            pagination: {
+              page: 1,
+              total_page: 10,
+              total_items: 100
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    ProtectionGroups:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              groups:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/ProtectionGroup'
+              pagination:
+                $ref: 'schema.yaml#/Pagination'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            groups: [
+              {
+                id: 1,
+                owner_group: {
+                  id: 1, name: "개발팀1", remarks: "개발하는 팀이다", deleted_flag: false
+                },
+                protection_cluster: {
+                  id: 1, type_code: "cluster.type.openstack",
+                  name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+                },
+                name: "대전센터 OpenStack #001 의 ERP 시스템",
+                remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위해 보호해야 할 가상머신 그룹",
+                recovery_point_objective_type: "recovery.point.objective.type.day",
+                recovery_point_objective: 15,
+                recovery_time_objective: 30,
+                snapshot_interval_type: "snapshot.interval.type.minutely",
+                snapshot_interval: 10,
+                state_code: "dr.protection.group.state.warning",
+                abnormal_state_reasons: {
+                  warning: [
+                    {
+                      code: "dr.protection.group.state.warning.reason.warning-state-plan-exists",
+                      contents: "{\"PlanName\": \"부산센터 OpenStack #001 로 복구하기 위한 계획\"}"
+                    }
+                  ]
+                },
+                created_at: 1615371464,
+                updated_at: 1615371464,
+                updatable: true
+              },
+              {
+                id: 2,
+                owner_group: {
+                  id: 1, name: "개발팀1", remarks: "개발하는 팀이다", deleted_flag: false
+                },
+                protection_cluster: {
+                  id: 1, type_code: "cluster.type.openstack",
+                  name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+                },
+                name: "대전센터 OpenStack #001 의 MIS 시스템",
+                remarks: "대전센터 OpenStack #001 의 MIS 시스템 정상동작을 위해 보호해야 할 가상머신 그룹",
+                recovery_point_objective_type: "recovery.point.objective.type.day",
+                recovery_point_objective: 15,
+                recovery_time_objective: 30,
+                snapshot_interval_type: "snapshot.interval.type.minutely",
+                snapshot_interval: 10,
+                state_code: "dr.protection.group.state.normal",
+                created_at: 1615371464,
+                updated_at: 1615371464,
+                updatable: true
+              }
+            ],
+            pagination: {
+              page: 1,
+              total_page: 10,
+              total_items: 100
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    ProtectionGroup:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              group:
+                $ref: 'schema.yaml#/ProtectionGroup'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            group: {
+              id: 1,
+              owner_group: {
+                id: 1, name: "개발팀1", remarks: "개발하는 팀이다", deleted_flag: false
+              },
+              protection_cluster: {
+                id: 1, type_code: "cluster.type.openstack",
+                name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+              },
+              name: "대전센터 OpenStack #001 의 ERP 시스템",
+              remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위해 보호해야 할 가상머신 그룹",
+              recovery_point_objective_type: "recovery.point.objective.type.day",
+              recovery_point_objective: 15,
+              recovery_time_objective: 30,
+              snapshot_interval_type: "snapshot.interval.type.minutely",
+              snapshot_interval: 10,
+              state_code: "dr.protection.group.state.warning",
+              abnormal_state_reasons: {
+                warning: [
+                  {
+                    code: "dr.protection.group.state.warning.reason.warning-state-plan-exists",
+                    contents: "{\"PlanName\": \"부산센터 OpenStack #001 로 복구하기 위한 계획\"}"
+                  }
+                ]
+              },
+              instances: [
+                {
+                  id: 1, uuid: "08b3bf8b-0e17-41fa-9836-acbec782716b",
+                  name: "instance #001", description: "instance description",
+                  cluster: {
+                    id: 1, name: "대전센터 OpenStack #001",
+                    type_code: "cluster.type.openstack",
+                    remarks: "대전센터 OpenStack #001"
+                  },
+                  tenant: {
+                    id: 1, name: "admin", enabled: true,
+                    uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25"
+                  },
+                  availability_zone: {
+                    id: 1, name: "nova"
+                  },
+                  hypervisor: {
+                    id: 1, hostname: "localhost", ip_address: "1.1.1.1",
+                    vcpu_total_cnt: 32, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000
+                  },
+                  keypair: {
+                    id: 1, name: "keypair #1", fingerprint: "da:47:93:b4:3a:90:5b:50:1f:20:a8:f9:b7:a1:d0:e1",
+                    public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCw85CkkctyDZTwveoVky/NAZggGnjqp3EPh2I62fY2mERYd9jqf9ZcSxFGbx449Lq8UySPSPdIESYUvJoqTVgjfN0DxSoNXDW58Yam18KoixqVWyIk+l/n1T195ZX8bU00CpYoO2vqLNQ1zl8PRhDZ/WtrxT9SfHl/HLOwUTGjDjrd84JjCyyIclPjwIPdGOn/wRd8JK8643/CpIVb2/ZvTa6nf8hb/l4LEq5TVUekV3mGN74/UmfyQ1LC43pbsoxfb51MNmIEJIT1dBdc/aP4HQf2Mp901Ee588xvFFJXHcCvNM4birtYxPvN1lxhH4AIeL7Hz+sDTVrSyJmH92fXtuI+uCrl/Izkuzp6Jwk9d4fWihxpjksvI5H/f2XxnSWh+EHoCvW0k5pkNgHXPjMce4AlaqGtrVWyTxMd3V6OMxXr7p/4GfapTWvc8tIyGt9od5h/Wket5df3YlaxY8RMK2dPJyTi8IdxHL2TFmUsCxyVuEzl+YLUWs/YpX3oA5k= khlee@localhost.localdomain",
+                    type_code: "openstack.keypair.type.ssh"
+                  },
+                  spec: {
+                    id: 1, uuid: "1", name: "small server spec #1", description: "flavor description",
+                    vcpu_total_cnt: 4, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000,
+                    swap_total_bytes: 4295000, ephemeral_total_bytes: 4295000,
+                    extra_specs: [ ]
+                  },
+                  networks: [
+                    {
+                      id: 1,
+                      network: {
+                        id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                        uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                        name: "private network #1", description: "private flat network"
+                      },
+                      subnet: {
+                        id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                        name: "subnet #1",
+                        network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                        dhcp_pools: [
+                          { id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150" },
+                          { id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255" }
+                        ],
+                        gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                        nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                      },
+                      floating_ip: {
+                        id: 1, uuid: "2da474b7-835b-4b22-9ae8-903ad470b9aa",
+                        description: "floating ip description",
+                        ip_address: "10.1.1.220"
+                      },
+                      dhcp_flag: true,
+                      ip_address: "192.168.1.212"
+                    }
+                  ],
+                  routers: [
+                    {
+                      id: 1, uuid: "397cf931-7a31-43fe-98c6-e9a8e7d5a57a",
+                      name: "router #1", description: "router description",
+                      internal_routing_interfaces: [
+                        {
+                          network: {
+                            id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                            uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                            name: "private network #1", description: "private flat network"
+                          },
+                          subnet: {
+                            id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                            name: "subnet #1",
+                            network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                            dhcp_pools: [
+                              { id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150" },
+                              { id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255" }
+                            ],
+                            gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                            nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                          },
+                          ip_address: "192.168.1.11"
+                        }
+                      ],
+                      external_routing_interfaces: [
+                        {
+                          network: {
+                            id: 1, external_flag: true, type_code: "openstack.network.type.flat",
+                            uuid: "6ea9b9cf-50b1-43de-86c0-456038530448",
+                            name: "public network", description: "public flat network"
+                          },
+                          subnet: {
+                            id: 1, uuid: "bd797d18-8858-4cc5-b1cb-b5ad0cd1841c",
+                            name: "subnet #0",
+                            network_cidr: "10.1.1.0/24",
+                            gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                            nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                          },
+                          ip_address: "10.1.1.100"
+                        }
+                      ],
+                      extra_routes: [
+                        {
+                          id: 1, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                        }
+                      ]
+                    }
+                  ],
+                  security_groups: [
+                    {
+                      id: 1, uuid: "22bdae7c-8d34-4f40-b79a-b3e379ff27dc",
+                      name: "security group #1", description: "security group description",
+                      rules: [
+                        {
+                          id: 1, uuid: "68a31847-9bb4-46f6-9b21-5e38a9f75079",
+                          direction: "ingress", description: "security group rule description",
+                          network_cidr: "0.0.0.0/0", port_range_max: 80, port_range_min: 80, protocol: "tcp",
+                          remote_security_group: {
+                            id: 2, uuid: "a406c6bd-afd2-4c8a-8b6e-fe104038056e",
+                            name: "security group #2", description: "security group description"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  volumes: [
+                    {
+                      storage: {
+                        id: 1, type_code: "openstack.storage.type.ceph",
+                        uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                        name: "ceph #001", description: "ceph storage"
+                      },
+                      volume: {
+                        id: 1, uuid: "a5bac8fd-de7d-4646-b8ec-02505e4f169a", name: "volume #001",
+                        size_bytes: 42950000, multiattach: true, bootable: false, readonly: false
+                      },
+                      device_path: "/dev/sdc",
+                      boot_index: 0
+                    },
+                    {
+                      storage: {
+                        id: 1, type_code: "openstack.storage.type.ceph",
+                        uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                        name: "ceph #001", description: "ceph storage"
+                      },
+                      volume: {
+                        id: 2, uuid: "ac73cddf-f1c3-4358-bf07-e0b36a0751b6", name: "volume #002",
+                        size_bytes: 42950000, multiattach: false, bootable: false, readonly: false
+                      },
+                      device_path: "/dev/sdd",
+                      boot_index: 1
+                    }
+                  ]
+                }
+              ],
+              created_at: 1615371464,
+              updated_at: 1615371464,
+              updatable: true
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    Snapshots:
+      description: 보호그룹의 스냅샷 목록을 반환한다.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              snapshots:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/ProtectionGroupSnapshot'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            snapshots: [
+              { id: 1, name: "dr-0000000001-20200128140400", created_at: 1611810240 },
+              { id: 2, name: "dr-0000000001-20200128140900", created_at: 1611810540 },
+              { id: 3, name: "dr-0000000001-20200128141400", created_at: 1611810840 }
+            ],
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    SnapshotMessage:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }

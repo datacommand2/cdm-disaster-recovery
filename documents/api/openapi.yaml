@@ -1,0 +1,127 @@
+openapi: "3.0.0"
+info:
+  version: v1
+  title: CDM-DisasterRecovery
+  description: 설명추가
+
+tags:
+  - name: "Protection Group"
+    description: 보호그룹 관리
+  - name: "Recovery Plan"
+    description: 재해복구계획 관리
+  - name: "Recovery Job"
+    description: 모의훈련 및 재해복구 작업 관리
+  - name: "Recovery Report"
+    description: 모의훈련 및 재해복구 결과보고서 관리
+  - name: "Protection Monitor"
+    description: 보호현황 모니터링
+  - name: "Protection Statistics"
+    description: 보호현황 통계보고서 생성 및 관리
+  - name: "Dashboard"
+    description: 대시보드
+  - name: "Instance Template"
+    description: 인스턴스템플릿 관리
+
+paths:
+  /recovery/unprotected-instances:
+    $ref: 'protection_group.yaml#/UnprotectedInstances'
+
+  /recovery/groups:
+    $ref: 'protection_group.yaml#/Resource'
+  /recovery/groups/{group_id}:
+    $ref: 'protection_group.yaml#/Object'
+  /recovery/groups/{group_id}/snapshots:
+    $ref: 'protection_group.yaml#/Snapshot'
+
+  /recovery/groups/{group_id}/plans:
+    $ref: 'recovery_plan.yaml#/Resource'
+  /recovery/groups/{group_id}/plans/{plan_id}:
+    $ref: 'recovery_plan.yaml#/Object'
+
+  /recovery/groups/{group_id}/jobs:
+    $ref: 'recovery_job.yaml#/Resources'
+  /recovery/groups/{group_id}/jobs/{job_id}:
+    $ref: 'recovery_job.yaml#/Object'
+
+  /recovery/groups/{group_id}/jobs/{job_id}/monitors:
+    $ref: 'recovery_job_monitor.yaml#/Monitors'
+  /recovery/groups/{group_id}/jobs/{job_id}/monitor:
+    $ref: 'recovery_job_monitor.yaml#/Status'
+  /recovery/groups/{group_id}/jobs/{job_id}/monitor/task-logs:
+    $ref: 'recovery_job_monitor.yaml#/TaskLog'
+  /recovery/groups/{group_id}/jobs/{job_id}/monitor/instances:
+    $ref: 'recovery_job_monitor.yaml#/InstanceStatus'
+  /recovery/groups/{group_id}/jobs/{job_id}/monitor/volumes:
+    $ref: 'recovery_job_monitor.yaml#/VolumeStatus'
+
+  /recovery/groups/{group_id}/jobs/{job_id}/pause:
+    $ref: 'recovery_job_control.yaml#/Pause'
+  /recovery/groups/{group_id}/jobs/{job_id}/pause/extend:
+    $ref: 'recovery_job_control.yaml#/ExtendPauseTime'
+  /recovery/groups/{group_id}/jobs/{job_id}/resume:
+    $ref: 'recovery_job_control.yaml#/Resume'
+  /recovery/groups/{group_id}/jobs/{job_id}/cancel:
+    $ref: 'recovery_job_control.yaml#/Cancel'
+  /recovery/groups/{group_id}/jobs/{job_id}/rollback/simulation:
+    $ref: 'recovery_job_control.yaml#/Rollback/Simulation'
+  /recovery/groups/{group_id}/jobs/{job_id}/rollback/migration:
+    $ref: 'recovery_job_control.yaml#/Rollback/Migration'
+  /recovery/groups/{group_id}/jobs/{job_id}/rollback/retry:
+    $ref: 'recovery_job_control.yaml#/RetryRollback'
+  /recovery/groups/{group_id}/jobs/{job_id}/rollback/extend:
+    $ref: 'recovery_job_control.yaml#/ExtendRollbackTime'
+  /recovery/groups/{group_id}/jobs/{job_id}/rollback/ignore:
+    $ref: 'recovery_job_control.yaml#/IgnoreRollback'
+  /recovery/groups/{group_id}/jobs/{job_id}/confirm:
+    $ref: 'recovery_job_control.yaml#/Confirm'
+  /recovery/groups/{group_id}/jobs/{job_id}/confirm/retry:
+    $ref: 'recovery_job_control.yaml#/RetryConfirm'
+  /recovery/groups/{group_id}/jobs/{job_id}/confirm/cancel:
+    $ref: 'recovery_job_control.yaml#/CancelConfirm'
+  /recovery/groups/{group_id}/jobs/{job_id}/retry:
+    $ref: 'recovery_job_control.yaml#/Retry'
+  /recovery/groups/{group_id}/jobs/{job_id}/force-delete:
+    $ref: 'recovery_job_control.yaml#/ForceDelete'
+
+  /recovery/history:
+    $ref: 'recovery_report.yaml#/History'
+  /recovery/history/{group_id}/reports/{group_name}/list:
+    $ref: 'recovery_report.yaml#/Resource'
+  /recovery/history/{group_id}/reports/{result_id}/detail:
+    $ref: 'recovery_report.yaml#/Object'
+  /recovery/history/{group_id}/reports/{result_id}:
+    $ref: 'recovery_report.yaml#/Delete'
+
+#  /recovery/monitor/clusters/{cluster_id}:
+#    $ref: 'protection_monitor.yaml#/Cluster'
+#  /recovery/monitor/plans/{plan_id}:
+#    $ref: 'protection_monitor.yaml#/RecoveryPlan'
+#  /recovery/monitor/plans/{plan_id}/instances/{instance_id}:
+#    $ref: 'protection_monitor.yaml#/RecoveryPlanInstance'
+#  /recovery/monitor/plans/{plan_id}/volumes/{volume_id}:
+#    $ref: 'protection_monitor.yaml#/RecoveryPlanVolume'
+
+#  /recovery/statistics/reports:
+#    $ref: 'statistics.yaml#/Resource'
+#  /recovery/statistics/reports/{result_id}:
+#    $ref: 'statistics.yaml#/Object'
+#  /recovery/statistics/config:
+#    $ref: 'statistics.yaml#/Config'
+
+  /recovery/dashboard/summary/clusters:
+    $ref: 'dashboard.yaml#/SummaryClusters'
+  /recovery/dashboard/summary/groups:
+    $ref: 'dashboard.yaml#/SummaryGroups'
+  /recovery/dashboard/summary/instances:
+    $ref: 'dashboard.yaml#/SummaryInstances'
+  /recovery/dashboard/summary/volumes:
+    $ref: 'dashboard.yaml#/SummaryVolumes'
+  /recovery/dashboard/summary/jobs:
+    $ref: 'dashboard.yaml#/SummaryJobs'
+  /recovery/dashboard/cluster-relationships:
+    $ref: 'dashboard.yaml#/ClusterRelationships'
+
+  /recovery/templates:
+    $ref: 'instance_template.yaml#/Resource'
+  /recovery/templates/{template_id}:
+    $ref: 'instance_template.yaml#/Object'

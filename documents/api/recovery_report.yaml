@@ -1,0 +1,861 @@
+Resource:
+  get:
+    summary: 재해복구결과 보고서 목록 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-06011
+    tags:
+      - "Recovery Report"
+    parameters:
+      - $ref: 'parameter.yaml#/Pagination/Limit'
+      - $ref: 'parameter.yaml#/Pagination/Offset'
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/ProtectionGroupName'
+      - $ref: '#/components/parameters/Type'
+      - $ref: '#/components/parameters/Result'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryResultReports'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Object:
+  get:
+    summary: 재해복구결과 보고서 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-06021
+    tags:
+      - "Recovery Report"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryResultID'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryResultReport'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Delete:
+  delete:
+    summary: 재해복구결과 보고서 삭제 (모의훈련)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-06041
+    tags:
+      - "Recovery Report"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryResultID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+History:
+  get:
+    summary: 보호그룹 history 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-09091
+    tags:
+      - "Recovery Report"
+    responses:
+      200:
+        $ref: '#/components/responses/History'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  parameters:
+    ProtectionGroupID:
+      in: path
+      name: group_id
+      description: 보호그룹 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+    ProtectionGroupName:
+      in: path
+      name: group_name
+      description: 보호그룹 Name
+      required: true
+      schema:
+        type: string
+
+    RecoveryResultID:
+      in: path
+      name: result_id
+      description: 재해복구결과 보고서 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    Type:
+      in: query
+      name: type
+      description: 복구 유형
+      schema:
+        type: string
+        enum:
+          - "dr.recovery.type.simulation"
+          - "dr.recovery.type.migration"
+
+    Result:
+      in: query
+      name: result
+      description: 복구 결과
+      schema:
+        type: string
+        enum:
+          - 'dr.recovery.result.success'
+          - 'dr.recovery.result.partial_success'
+          - 'dr.recovery.result.failed'
+          - 'dr.recovery.result.canceled'
+
+  responses:
+    RecoveryResultReports:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              reports:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryResult'
+              pagination:
+                $ref: 'schema.yaml#/Pagination'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            reports: [
+              {
+                id: 1,
+                operator_id: 2,
+                operator_account: "wcseo",
+                operator_name: "서원철",
+                operator_department: "개발 1팀",
+                operator_position: "팀장",
+                approver_id: 2,
+                approver_account: "wcseo",
+                approver_name: "서원철",
+                approver_department: "개발 1팀",
+                approver_position: "팀장",
+                protection_group_id: 2,
+                protection_group_name: "대전센터 OpenStack #001 의 ERP 시스템",
+                protection_group_remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위해 보호해야 할 가상머신 그룹",
+                recovery_plan_id: 1,
+                recovery_plan_name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+                recovery_plan_remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+                protection_cluster_id: 1,
+                protection_cluster_type_code: "cluster.type.openstack",
+                protection_cluster_name: "대전센터 OpenStack #001",
+                protection_cluster_remarks: "대전센터 OpenStack #001",
+                recovery_cluster_id: 2,
+                recovery_cluster_type_code: "cluster.type.openstack",
+                recovery_cluster_name: "광주센터 OpenStack #001",
+                recovery_cluster_remarks: "광주센터 OpenStack #001",
+                recovery_type_code: "dr.recovery.type.migration",
+                recovery_direction_code: "dr.recovery.direction.failover",
+                recovery_point_objective_type: "recovery.point.objective.type.day",
+                recovery_point_objective: 15,
+                recovery_time_objective: 30,
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest",
+                recovery_point: 1615425692,
+                schedule_type: "schedule.type.specified",
+                started_at: 1615425692,
+                finished_at: 1615425792,
+                elapsed_time: 60,
+                result_code: "dr.recovery.result.success",
+                warning_flag: true,
+                warning_reasons: [
+                  {
+                    code: "dr.recovery.result.not-on-recovery-time-objective",
+                    contents: "{\"RecoveryTimeObjective\": \"50\", \"ElapsedTime\": \"60\"}"
+                  }
+                ]
+              }
+            ],
+            pagination: {
+              page: 1,
+              total_page: 10,
+              total_items: 100
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    RecoveryResultReport:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              report:
+                $ref: 'schema.yaml#/RecoveryResult'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            report: {
+              id: 1,
+              operator_id: 2,
+              operator_account: "wcseo",
+              operator_name: "서원철",
+              operator_department: "개발 1팀",
+              operator_position: "팀장",
+              approver_id: 2,
+              approver_account: "wcseo",
+              approver_name: "서원철",
+              approver_department: "개발 1팀",
+              approver_position: "팀장",
+              protection_group_id: 2,
+              protection_group_name: "대전센터 OpenStack #001 의 ERP 시스템",
+              protection_group_remarks: "대전센터 OpenStack #001 의 ERP 시스템 정상동작을 위해 보호해야 할 가상머신 그룹",
+              recovery_plan_id: 1,
+              recovery_plan_name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+              recovery_plan_remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+              protection_cluster_id: 1,
+              protection_cluster_type_code: "cluster.type.openstack",
+              protection_cluster_name: "대전센터 OpenStack #001",
+              protection_cluster_remarks: "대전센터 OpenStack #001",
+              recovery_cluster_id: 2,
+              recovery_cluster_type_code: "cluster.type.openstack",
+              recovery_cluster_name: "광주센터 OpenStack #001",
+              recovery_cluster_remarks: "광주센터 OpenStack #001",
+              recovery_type_code: "dr.recovery.type.migration",
+              recovery_direction_code: "dr.recovery.direction.failover",
+              recovery_point_objective_type: "recovery.point.objective.type.day",
+              recovery_point_objective: 15,
+              recovery_time_objective: 30,
+              recovery_point_type_code: "dr.recovery.recovery_point.type.latest",
+              schedule_type: "schedule.type.specified",
+              recovery_point: 1615425692,
+              started_at: 1615425692,
+              finished_at: 1615425792,
+              elapsed_time: 60,
+              result_code: "dr.recovery.result.success",
+              warning_flag: true,
+              warning_reasons: [
+                {
+                  code: "dr.recovery.result.not-on-recovery-time-objective",
+                  contents: "{\"RecoveryTimeObjective\": \"30\", \"ElapsedTime\": \"60\"}"
+                }
+              ],
+              task_logs: [
+                {
+                  log_seq: 1,
+                  code: "dr.recovery.task.tenant.creation.success",
+                  contents: "{\"TenantName\": \"admin-mirror\"}",
+                  log_dt: 1615359940
+                },
+                {
+                  log_seq: 2,
+                  code: "dr.recovery.task.tenant.role-assign-to-user.success",
+                  contents: "{\"TenantName\": \"admin-mirror\", \"Role\": \"member\", \"User\": \"cdm\"}",
+                  log_dt: 1615359941
+                },
+                {
+                  log_seq: 3,
+                  code: "dr.recovery.task.tenant.update-quota.success",
+                  contents: "{\"TenantName\": \"admin-mirror\", \"Quotas\": {\"cores\": 20, \"fixed_ips\": -1, \"floating_ips\": -1, \"id\": \"fake_tenant\", \"injected_file_content_bytes\": 10240, \"injected_file_path_bytes\": 255, \"injected_files\": 5, \"instances\": 10, \"key_pairs\": 100, \"metadata_items\": 128, \"ram\": 51200, \"security_group_rules\": -1, \"security_groups\": -1, \"server_groups\": 10, \"server_group_members\": 10}}",
+                  log_dt: 1615359942
+                },
+                {
+                  log_seq: 4,
+                  code: "dr.recovery.job.network.creation.success",
+                  contents: "{\"NetworkName\": \"private network #1\", \"UUID\": \"95f3e194-a4b4-4747-ab45-eea4ecaf9b62\"}",
+                  log_dt: 1615359943
+                },
+                {
+                  log_seq: 5,
+                  code: "dr.recovery.job.network-subnet.creation.success",
+                  contents: "{\"NetworkName\": \"private network #1\", \"Subnet\": {\"uuid\": \"1ea67854-f8b6-4f7f-964f-3c96ca20b698\", \"ip_version\": 4, \"network_cidr\": \"192.168.1.0/24\", \"gateway_ip_address\": \"192.168.1.1\"}}",
+                  log_dt: 1615359944
+                }
+              ],
+              instances: [
+                {
+                  protection_cluster_instance: {
+                    id: 1, uuid: "08b3bf8b-0e17-41fa-9836-acbec782716b",
+                    name: "instance #001", description: "instance description",
+                    cluster: {
+                      id: 1, name: "대전센터 OpenStack #001",
+                      type_code: "cluster.type.openstack",
+                      remarks: "대전센터 OpenStack #001"
+                    },
+                    tenant: {
+                      id: 1, uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25", enabled: true,
+                      name: "admin", description: "Admin tenant"
+                    },
+                    availability_zone: {
+                      id: 1, name: "nova"
+                    },
+                    hypervisor: {
+                      id: 1, type_code: "qemu",
+                      hostname: "localhost", ip_address: "1.1.1.1"
+                    },
+                    keypair: {
+                      id: 1, name: "keypair #1", fingerprint: "da:47:93:b4:3a:90:5b:50:1f:20:a8:f9:b7:a1:d0:e1",
+                      public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCw85CkkctyDZTwveoVky/NAZggGnjqp3EPh2I62fY2mERYd9jqf9ZcSxFGbx449Lq8UySPSPdIESYUvJoqTVgjfN0DxSoNXDW58Yam18KoixqVWyIk+l/n1T195ZX8bU00CpYoO2vqLNQ1zl8PRhDZ/WtrxT9SfHl/HLOwUTGjDjrd84JjCyyIclPjwIPdGOn/wRd8JK8643/CpIVb2/ZvTa6nf8hb/l4LEq5TVUekV3mGN74/UmfyQ1LC43pbsoxfb51MNmIEJIT1dBdc/aP4HQf2Mp901Ee588xvFFJXHcCvNM4birtYxPvN1lxhH4AIeL7Hz+sDTVrSyJmH92fXtuI+uCrl/Izkuzp6Jwk9d4fWihxpjksvI5H/f2XxnSWh+EHoCvW0k5pkNgHXPjMce4AlaqGtrVWyTxMd3V6OMxXr7p/4GfapTWvc8tIyGt9od5h/Wket5df3YlaxY8RMK2dPJyTi8IdxHL2TFmUsCxyVuEzl+YLUWs/YpX3oA5k= khlee@localhost.localdomain",
+                      type_code: "openstack.keypair.type.ssh"
+                    },
+                    spec: {
+                      id: 1, uuid: "1", name: "small server spec #1", description: "flavor description",
+                      vcpu_total_cnt: 4, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000,
+                      swap_total_bytes: 4295000, ephemeral_total_bytes: 4295000,
+                      extra_specs: []
+                    },
+                    networks: [
+                      {
+                        id: 1, dhcp_flag: true, ip_address: "192.168.1.212",
+                        network: {
+                          id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                          uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                          name: "private network #1", description: "private flat network"
+                        },
+                        subnet: {
+                          id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                          name: "subnet #1", description: "subnet description",
+                          network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                          dhcp_pools: [
+                            {id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                            {id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                          ],
+                          gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                          nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                        },
+                        floating_ip: {
+                          id: 1, uuid: "2da474b7-835b-4b22-9ae8-903ad470b9aa",
+                          description: "floating ip description",
+                          ip_address: "10.1.1.220"
+                        }
+                      }
+                    ],
+                    routers: [
+                      {
+                        id: 1, uuid: "397cf931-7a31-43fe-98c6-e9a8e7d5a57a",
+                        name: "router #1", description: "router description",
+                        internal_routing_interfaces: [
+                          {
+                            network: {
+                              id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                              uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                              name: "private network #1", description: "private flat network"
+                            },
+                            subnet: {
+                              id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                              name: "subnet #1",
+                              network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                              dhcp_pools: [
+                                {id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                                {id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                              ],
+                              gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                              nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                            },
+                            ip_address: "192.168.1.11"
+                          }
+                        ],
+                        external_routing_interfaces: [
+                          {
+                            network: {
+                              id: 1, external_flag: true, type_code: "openstack.network.type.flat",
+                              uuid: "6ea9b9cf-50b1-43de-86c0-456038530448",
+                              name: "public network", description: "public flat network"
+                            },
+                            subnet: {
+                              id: 1, uuid: "bd797d18-8858-4cc5-b1cb-b5ad0cd1841c",
+                              name: "subnet #0",
+                              network_cidr: "10.1.1.0/24",
+                              gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                              nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                            },
+                            ip_address: "10.1.1.100"
+                          }
+                        ],
+                        extra_routes: [
+                          {
+                            id: 1, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                          }
+                        ]
+                      }
+                    ],
+                    security_groups: [
+                      {
+                        id: 1, uuid: "22bdae7c-8d34-4f40-b79a-b3e379ff27dc",
+                        name: "security group #1", description: "security group description",
+                        rules: [
+                          {
+                            id: 1, uuid: "68a31847-9bb4-46f6-9b21-5e38a9f75079",
+                            direction: "ingress", description: "security group rule description",
+                            network_cidr: "0.0.0.0/0", port_range_max: 80, port_range_min: 80, protocol: "tcp",
+                            remote_security_group: {
+                              id: 2, uuid: "a406c6bd-afd2-4c8a-8b6e-fe104038056e",
+                              name: "security group #2", description: "security group description"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    volumes: [
+                      {
+                        storage: {
+                          id: 1, type_code: "openstack.storage.type.ceph",
+                          uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                          name: "ceph #001", description: "ceph storage"
+                        },
+                        volume: {
+                          id: 1, uuid: "a5bac8fd-de7d-4646-b8ec-02505e4f169a", name: "volume #001",
+                          size_bytes: 42950000, multiattach: true, bootable: false, readonly: false
+                        },
+                        device_path: "/dev/sdc",
+                        boot_index: 0
+                      },
+                      {
+                        storage: {
+                          id: 1, type_code: "openstack.storage.type.ceph",
+                          uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                          name: "ceph #001", description: "ceph storage"
+                        },
+                        volume: {
+                          id: 2, uuid: "ac73cddf-f1c3-4358-bf07-e0b36a0751b6", name: "volume #002",
+                          size_bytes: 42950000, multiattach: false, bootable: false, readonly: false
+                        },
+                        device_path: "/dev/sdd",
+                        boot_index: 1
+                      }
+                    ]
+                  },
+                  recovery_cluster_instance: {
+                    id: 100, uuid: "a212f59f-5b70-4504-85d3-c873dc8a7aa2",
+                    name: "instance #001", description: "instance description",
+                    cluster: {
+                      id: 2, name: "광주센터 OpenStack #001",
+                      type_code: "cluster.type.openstack",
+                      remarks: "광주센터 OpenStack #001"
+                    },
+                    tenant: {
+                      id: 5, uuid: "6f040709-390e-46e8-8e8c-4488aaca8fa9", enabled: true,
+                      name: "project #1", description: "project description"
+                    },
+                    availability_zone: {
+                      id: 6, name: "nova"
+                    },
+                    hypervisor: {
+                      id: 15, type_code: "qemu",
+                      hostname: "localhost", ip_address: "1.1.1.1"
+                    },
+                    spec: {
+                      id: 166, uuid: "166", name: "small server spec #1", description: "flavor description",
+                      vcpu_total_cnt: 4, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000,
+                      swap_total_bytes: 4295000, ephemeral_total_bytes: 4295000,
+                      extra_specs: []
+                    },
+                    networks: [
+                      {
+                        id: 177, dhcp_flag: true, ip_address: "192.168.1.55",
+                        network: {
+                          id: 21, external_flag: false, type_code: "openstack.network.type.flat",
+                          uuid: "457dda5b-26de-4616-b558-43a9e0952ed9",
+                          name: "private network #1", description: "private flat network"
+                        },
+                        subnet: {
+                          id: 27, uuid: "f77e9f98-d94f-4590-8016-b02ad5935d82",
+                          name: "subnet #1", description: "subnet description",
+                          network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                          dhcp_pools: [
+                            {id: 103, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                            {id: 104, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                          ],
+                          gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                          nameservers: [{id: 35, nameserver: "8.8.8.8"}]
+                        },
+                        floating_ip: {
+                          id: 188, uuid: "5d4f4bdb-e968-4009-9654-6aaadfb12396",
+                          description: "floating ip description",
+                          ip_address: "10.1.1.220"
+                        }
+                      }
+                    ],
+                    routers: [
+                      {
+                        id: 177, uuid: "cf91bc30-bc1b-4bf7-9e3e-00b2cdfb3a1b",
+                        name: "router #1", description: "router description",
+                        internal_routing_interfaces: [
+                          {
+                            network: {
+                              id: 21, external_flag: false, type_code: "openstack.network.type.flat",
+                              uuid: "457dda5b-26de-4616-b558-43a9e0952ed9",
+                              name: "private network #1", description: "private flat network"
+                            },
+                            subnet: {
+                              id: 27, uuid: "f77e9f98-d94f-4590-8016-b02ad5935d82",
+                              name: "subnet #1", description: "subnet description",
+                              network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                              dhcp_pools: [
+                                {id: 103, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                                {id: 104, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                              ],
+                              gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                              nameservers: [{id: 35, nameserver: "8.8.8.8"}]
+                            },
+                            ip_address: "192.168.1.11"
+                          }
+                        ],
+                        external_routing_interfaces: [
+                          {
+                            network: {
+                              id: 11, external_flag: true, type_code: "openstack.network.type.flat",
+                              uuid: "a7302506-5734-4ad0-8098-eeec7758db63",
+                              name: "public network", description: "public flat network",
+                            },
+                            subnet: {
+                              id: 21, uuid: "d2f97afd-7ae8-4e8e-b16d-33b9addcf61e",
+                              name: "public subnet #1", description: "subnet description",
+                              network_cidr: "10.1.1.0/24", dhcp_enabled: false,
+                              gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                              nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                            },
+                            ip_address: "10.1.1.100"
+                          }
+                        ],
+                        extra_routes: [
+                          {
+                            id: 192, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                          }
+                        ]
+                      }
+                    ],
+                    security_groups: [
+                      {
+                        id: 71, uuid: "b7a2ced2-2677-4b55-a0dd-03ad0367f8fe",
+                        name: "security group #1", description: "security group description",
+                        rules: [
+                          {
+                            id: 651, uuid: "7b6de515-d932-41ad-a8fc-37a623f06ae2",
+                            direction: "ingress", description: "security group rule description",
+                            network_cidr: "0.0.0.0/0", port_range_max: 80, port_range_min: 80, protocol: "tcp",
+                            remote_security_group: {
+                              id: 72, uuid: "691e82c5-7027-4796-8ed5-abe85d389fc2",
+                              name: "security group #2", description: "security group description"
+                            }
+                          }
+                        ]
+                      }
+                    ],
+                    volumes: [
+                      {
+                        storage: {
+                          id: 13, type_code: "cluster.storage.type.ceph",
+                          uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                          name: "ceph #001", description: "ceph storage"
+                        },
+                        volume: {
+                          id: 31, uuid: "fc75b7ca-ee39-4da1-bbf6-58ae946dc312",
+                          name: "volume #001", description: "volume description"
+                        },
+                        device_path: "/dev/sdc",
+                        boot_index: 0
+                      },
+                      {
+                        storage: {
+                          id: 13, type_code: "cluster.storage.type.ceph",
+                          uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                          name: "ceph #001", description: "ceph storage"
+                        },
+                        volume: {
+                          id: 32, uuid: "62cf904f-0d85-4db0-93af-4485d3a88892",
+                          name: "volume #002", description: "volume description"
+                        },
+                        device_path: "/dev/sdd",
+                        boot_index: 1
+                      }
+                    ]
+                  },
+                  recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                  recovery_point: 1615425692,
+                  auto_start_flag: true,
+                  diagnosis_flag: true,
+                  diagnosis_method_code: "dr.recovery.plan.instance.diagnosis.method.tcp-socket",
+                  diagnosis_method_data: "{\"Protocol\": \"TCP\", \"Port\": 8000}",
+                  diagnosis_timeout: 600,
+                  dependencies: [],
+                  started_at: 1615425697,
+                  finished_at: 1615425698,
+                  result_code: "dr.recovery.instance.result.creation.failed",
+                  failed_reason: {
+                    code: "dr.recovery.instance.creation-failed.incompleteness-parameter",
+                    contents: "{\"InstanceName\": \"instance #1\", \"Param\": \"name\", \"Cause\": \"'name' must be set\"}"
+                  },
+                  rollback_flag: true
+                }
+              ],
+              volumes: [
+                {
+                  protection_cluster_volume: {
+                    id: 1, uuid: "a5bac8fd-de7d-4646-b8ec-02505e4f169a",
+                    name: "volume #001", description: "volume description",
+                    size_bytes: 42950000, multiattach: true, bootable: true, readonly: false,
+                    storage: {
+                      id: 1, uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                      type_code: "cluster.storage.type.ceph",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    }
+                  },
+                  recovery_cluster_volume: {
+                    id: 31, uuid: "fc75b7ca-ee39-4da1-bbf6-58ae946dc312",
+                    name: "volume #001", description: "volume description",
+                    size_bytes: 42950000, multiattach: true, bootable: true, readonly: false,
+                    storage: {
+                      id: 13, uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                      type_code: "cluster.storage.type.ceph",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    }
+                  },
+                  recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                  recovery_point: 1615425692,
+                  started_at: 1615425693,
+                  finished_at: 1615425694,
+                  result_code: "dr.recovery.volume.result.failed",
+                  failed_reason: {
+                    code: "dr.recovery.volume.ignored.instance-creation-failed",
+                    contents: "{\"InstanceName\": \"instance #1\"}"
+                  },
+                  rollback_flag: true
+                },
+                {
+                  protection_cluster_volume: {
+                    id: 2, uuid: "ac73cddf-f1c3-4358-bf07-e0b36a0751b6",
+                     name: "volume #002", description: "volume description",
+                    size_bytes: 42950000, multiattach: true, bootable: true, readonly: false,
+                    storage: {
+                      id: 1, uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                      type_code: "cluster.storage.type.ceph",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    }
+                  },
+                  recovery_cluster_volume: {
+                    id: 32, uuid: "62cf904f-0d85-4db0-93af-4485d3a88892",
+                    name: "volume #002", description: "volume description",
+                    size_bytes: 42950000, multiattach: true, bootable: true, readonly: false,
+                    storage: {
+                      id: 13, uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                      type_code: "cluster.storage.type.ceph",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    }
+                  },
+                  recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                  recovery_point: 1615425692,
+                  started_at: 1615425694,
+                  finished_at: 1615425695,
+                  result_code: "dr.recovery.volume.result.success",
+                  rollback_flag: false
+                }
+              ]
+            },
+            routers: [
+              {
+                protection_cluster_router: {
+                  id: 1, uuid: "397cf931-7a31-43fe-98c6-e9a8e7d5a57a",
+                  name: "router #1", description: "router description",
+                  internal_routing_interfaces: [
+                    {
+                      network: {
+                        id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                        uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                        name: "private network #1", description: "private flat network"
+                      },
+                      subnet: {
+                        id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                        name: "subnet #1",
+                        network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                        dhcp_pools: [
+                          { id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150" },
+                          { id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255" }
+                        ],
+                        gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                        nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                      },
+                      ip_address: "192.168.1.11"
+                    }
+                  ],
+                  external_routing_interfaces: [
+                    {
+                      network: {
+                        id: 1, external_flag: true, type_code: "openstack.network.type.flat",
+                        uuid: "6ea9b9cf-50b1-43de-86c0-456038530448",
+                        name: "public network", description: "public flat network"
+                      },
+                      subnet: {
+                        id: 1, uuid: "bd797d18-8858-4cc5-b1cb-b5ad0cd1841c",
+                        name: "subnet #0",
+                        network_cidr: "10.1.1.0/24",
+                        gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                        nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                      },
+                      ip_address: "10.1.1.100"
+                    }
+                  ],
+                  extra_routes: [
+                    {
+                      id: 1, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                    }
+                  ]
+                },
+                recovery_cluster_router: {
+                  id: 177, uuid: "cf91bc30-bc1b-4bf7-9e3e-00b2cdfb3a1b",
+                  name: "router #1", description: "router description",
+                  internal_routing_interfaces: [
+                    {
+                      network: {
+                        id: 21, external_flag: false, type_code: "openstack.network.type.flat",
+                        uuid: "457dda5b-26de-4616-b558-43a9e0952ed9",
+                        name: "private network #1", description: "private flat network"
+                      },
+                      subnet: {
+                        id: 27, uuid: "f77e9f98-d94f-4590-8016-b02ad5935d82",
+                        name: "subnet #1", description: "subnet description",
+                        network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                        dhcp_pools: [
+                          { id: 103, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150" },
+                          { id: 104, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255" }
+                        ],
+                        gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                        nameservers: [ { id: 35, nameserver: "8.8.8.8" } ]
+                      },
+                      ip_address: "192.168.1.11"
+                    }
+                  ],
+                  external_routing_interfaces: [
+                    {
+                      network: {
+                        id: 11, external_flag: true, type_code: "openstack.network.type.flat",
+                        uuid: "a7302506-5734-4ad0-8098-eeec7758db63",
+                        name: "public network", description: "public flat network",
+                      },
+                      subnet: {
+                        id: 21, uuid: "d2f97afd-7ae8-4e8e-b16d-33b9addcf61e",
+                        name: "public subnet #1", description: "subnet description",
+                        network_cidr: "10.1.1.0/24", dhcp_enabled: false,
+                        gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                        nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                      },
+                      ip_address: "10.1.1.100"
+                    }
+                  ],
+                  extra_routes: [
+                    {
+                      id: 192, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                    }
+                  ]
+                }
+              }
+            ],
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    History:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              history:
+                $ref: 'schema.yaml#/ProtectionGroupHistory'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            history: {
+              clusters: [
+                {
+                  id: 1,
+                  name: "대전센터 OpenStack #001",
+                  groups: [
+                    {
+                      id: 1,
+                      name: "대전센터 OpenStack #001 의 ERP 시스템",
+                    }
+                  ],
+                },
+                {
+                  id: 2,
+                  name: "대전센터 OpenStack #002",
+                  groups: [
+                    {
+                      id: 2,
+                      name: "대전센터 OpenStack #002 의 ERP 시스템",
+                    }
+                  ],
+                }
+              ]
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }

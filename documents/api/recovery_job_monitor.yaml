@@ -1,0 +1,502 @@
+Monitors:
+  get:
+    summary: 재해복구작업 모든 상태 모니터링 (WebSocket 프로토콜 지원)
+    description: 설명추가
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+      - $ref: '#/components/parameters/MonitorInterval'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryJobMonitors'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Status:
+  get:
+    summary: 재해복구작업 모니터링 (WebSocket 프로토콜 지원)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05111
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+      - $ref: '#/components/parameters/MonitorInterval'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryJobStatus'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+TaskLog:
+  get:
+    summary: 재해복구작업 작업내역 모니터링 (WebSocket 프로토콜 지원)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05112
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+      - $ref: '#/components/parameters/MonitorInterval'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryTaskLogs'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+InstanceStatus:
+  get:
+    summary: 재해복구작업 인스턴스 모니터링 (WebSocket 프로토콜 지원)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05113
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+      - $ref: '#/components/parameters/MonitorInterval'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryJobInstanceStatus'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+VolumeStatus:
+  get:
+    summary: 재해복구작업 볼륨 모니터링 (WebSocket 프로토콜 지원)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05114
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+      - $ref: '#/components/parameters/MonitorInterval'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryJobVolumeStatus'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  parameters:
+    ProtectionGroupID:
+      in: path
+      name: group_id
+      description: 보호그룹 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    RecoveryJobID:
+      in: path
+      name: job_id
+      description: 재해복구작업 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    MonitorInterval:
+      in: query
+      name: interval
+      description: WebSocket 프로토콜을 사용할 때의 데이터 수신 간격 (sec)
+      schema:
+        type: integer
+        format: uint32
+        minimum: 2
+        maximum: 30
+        default: 5
+
+  responses:
+    RecoveryJobMonitors:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: 'schema.yaml#/RecoveryJobStatus'
+              tenants:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobTenantStatus'
+              security_groups:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobSecurityGroupStatus'
+              networks:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobNetworkStatus'
+              subnets:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobSubnetStatus'
+              floating_ips:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobFloatingIpStatus'
+              routers:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobRouterStatus'
+              volumes:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobVolumeStatus'
+              key_pairs:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobKeyPairStatus'
+              instance_spec:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobInstanceSpecStatus'
+              instances:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobInstanceStatus'
+          example: {
+            status: {
+              started_at: 1615354981,
+              elapsed_time: 100,
+              operation_code: "pause",
+              state_code: "dr.recovery.job.state.paused",
+              resume_at: 1615359981
+            },
+            tenants: [
+              {
+                tenant: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            networks: [
+              {
+                network: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            subnets: [
+              {
+                subnet: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            floating_ips: [
+              {
+                floating_ip: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            routers: [
+              {
+                router: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            key_pairs: [
+              {
+                keypair: { name: "key" },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            instances_specs: [
+              {
+                instances_spec: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                state_code: "done",
+                result_code: "success"
+              }
+            ],
+            instances: [
+              {
+                instance: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                state_code: "dr.recovery.job.instance.state.excepted",
+                result_code: "dr.recovery.instance.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.volume.storage-update-required",
+                  contents: "{\"InstanceName\": \"instance #001\", \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                }
+              },
+              {
+                instance: { id: 2 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                finished_at: 1615359952,
+                state_code: "dr.recovery.job.instance.state.ignored",
+                result_code: "dr.recovery.instance.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.instance.creation-ignored-dependency-failure",
+                  contents: "{\"InstanceName\": \"instance #2\", \"DependOn\": \"instance #1\"}"
+                }
+              }
+            ],
+            volumes: [
+              {
+                volume: { id: 1 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                state_code: "dr.recovery.job.volume.state.excepted",
+                result_code: "dr.recovery.volume.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.volume.storage-update-required",
+                  contents: "{\"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                }
+              },
+              {
+                volume: { id: 2 },
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359947,
+                finished_at: 1615359949,
+                state_code: "dr.recovery.job.volume.state.success",
+                result_code: "dr.recovery.volume.result.success"
+              }
+            ]
+          }
+
+    RecoveryJobStatus:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                $ref: 'schema.yaml#/RecoveryJobStatus'
+          example: {
+            status: {
+              started_at: 1615354981,
+              elapsed_time: 100,
+              operation_code: "pause",
+              state_code: "dr.recovery.job.state.paused",
+              resume_at: 1615359981
+            }
+          }
+
+    RecoveryTaskLogs:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              task_logs:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryTaskLog'
+          example: {
+            task_logs: [
+              {
+                log_seq: 1,
+                code: "dr.recovery.task.tenant.creation.success",
+                contents: "{\"TenantName\": \"admin-mirror\"}",
+                log_dt: 1615359940
+              },
+              {
+                log_seq: 2,
+                code: "dr.recovery.task.tenant.role-assign-to-user.success",
+                contents: "{\"TenantName\": \"admin-mirror\", \"Role\": \"member\", \"User\": \"cdm\"}",
+                log_dt: 1615359941
+              },
+              {
+                log_seq: 3,
+                code: "dr.recovery.task.tenant.update-quota.success",
+                contents: "{\"TenantName\": \"admin-mirror\", \"Quotas\": {\"cores\": 20, \"fixed_ips\": -1, \"floating_ips\": -1, \"id\": \"fake_tenant\", \"injected_file_content_bytes\": 10240, \"injected_file_path_bytes\": 255, \"injected_files\": 5, \"instances\": 10, \"key_pairs\": 100, \"metadata_items\": 128, \"ram\": 51200, \"security_group_rules\": -1, \"security_groups\": -1, \"server_groups\": 10, \"server_group_members\": 10}}",
+                log_dt: 1615359942
+              },
+              {
+                log_seq: 4,
+                code: "dr.recovery.job.network.creation.success",
+                contents: "{\"NetworkName\": \"private network #1\", \"UUID\": \"95f3e194-a4b4-4747-ab45-eea4ecaf9b62\"}",
+                log_dt: 1615359943
+              },
+              {
+                log_seq: 5,
+                code: "dr.recovery.job.network-subnet.creation.success",
+                contents: "{\"NetworkName\": \"private network #1\", \"Subnet\": {\"uuid\": \"1ea67854-f8b6-4f7f-964f-3c96ca20b698\", \"ip_version\": 4, \"network_cidr\": \"192.168.1.0/24\", \"gateway_ip_address\": \"192.168.1.1\"}}",
+                log_dt: 1615359944
+              }
+            ]
+          }
+
+    RecoveryJobInstanceStatus:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              instances:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobInstanceStatus'
+          example: {
+            instances: [
+              {
+                instance: {id: 1},
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                state_code: "dr.recovery.job.instance.state.excepted",
+                result_code: "dr.recovery.instance.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.volume.storage-update-required",
+                  contents: "{\"InstanceName\": \"instance #001\", \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                }
+              },
+              {
+                instance: {id: 2},
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359951,
+                finished_at: 1615359952,
+                state_code: "dr.recovery.job.instance.state.ignored",
+                result_code: "dr.recovery.instance.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.instance.creation-ignored-dependency-failure",
+                  contents: "{\"InstanceName\": \"instance #2\", \"DependOn\": \"instance #1\"}"
+                }
+              }
+            ]
+          }
+
+    RecoveryJobVolumeStatus:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              volumes:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryJobVolumeStatus'
+          example: {
+            volumes: [
+              {
+                volume: {id: 1},
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                state_code: "dr.recovery.job.volume.state.excepted",
+                result_code: "dr.recovery.volume.result.failed",
+                failed_reason: {
+                  code: "dr.recovery.job.volume.storage-update-required",
+                  contents: "{\"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                }
+              },
+              {
+                volume: {id: 2},
+                recovery_point_type_code: "dr.recovery.recovery_point.type.latest_snapshot",
+                recovery_point: 1605427592,
+                started_at: 1615359947,
+                finished_at: 1615359949,
+                state_code: "dr.recovery.job.volume.state.success",
+                result_code: "dr.recovery.volume.result.success"
+              }
+            ]
+          }

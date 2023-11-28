@@ -1,0 +1,1051 @@
+Resource:
+  get:
+    summary: 재해복구계획 목록 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-03011
+    tags:
+      - "Recovery Plan"
+    parameters:
+      - $ref: 'parameter.yaml#/Pagination/Limit'
+      - $ref: 'parameter.yaml#/Pagination/Offset'
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/Name'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryPlans'
+      204:
+        description: No Contents
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  post:
+    summary: 재해복구계획 등록
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-03031
+    tags:
+      - "Recovery Plan"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+    requestBody:
+      $ref: '#/components/requestBodies/RecoveryPlan'
+    responses:
+      201:
+        $ref: '#/components/responses/RecoveryPlan'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      409:
+        description: Conflict
+      412:
+        $ref: '#/components/responses/AbnormalStateReasons'
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Object:
+  get:
+    summary: 재해복구계획 조회
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-03021
+    tags:
+      - "Recovery Plan"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryPlanID'
+      - $ref: '#/components/parameters/ProtectionGroupSnapshotID'
+
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryPlan'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  patch:
+    summary: 재해복구계획 수정
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-03041
+    tags:
+      - "Recovery Plan"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryPlanID'
+    requestBody:
+      $ref: '#/components/requestBodies/RecoveryPlan'
+    responses:
+      200:
+        $ref: '#/components/responses/RecoveryPlan'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      409:
+        description: Conflict
+      412:
+        $ref: '#/components/responses/AbnormalStateReasons'
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+  delete:
+    summary: 재해복구계획 삭제
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-03051
+    tags:
+      - "Recovery Plan"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryPlanID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  parameters:
+    ProtectionGroupID:
+      in: path
+      name: group_id
+      description: 보호그룹 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    RecoveryPlanID:
+      in: path
+      name: plan_id
+      description: 재해복구계획 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    ProtectionGroupSnapshotID:
+      in: query
+      name: group_snapshot_id
+      description: 보호 그룹 스냅샷 ID
+      schema:
+        type: integer
+        format: uint64
+
+    Name:
+      in: query
+      name: name
+      description: 재해복구계획 이름
+      schema:
+        type: string
+
+  requestBodies:
+    RecoveryPlan:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              plan:
+                $ref: 'schema.yaml#/RecoveryPlan'
+              force:
+                description: warning 을 무시하고 등록
+                type: boolean
+          examples:
+            creation:
+              value: {
+                plan: {
+                  recovery_cluster: {id: 2},
+                  name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+                  snapshot_retention_count: 12,
+                  remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+                  detail: {
+                    tenants: [{
+                      recovery_type_code: "dr.recovery.plan.tenant.recovery.type.mirroring",
+                      protection_cluster_tenant: {id: 1},
+                      recovery_cluster_tenant_mirror_name: "admin-mirror"
+                    }],
+                    availability_zones: [{
+                      recovery_type_code: "dr.recovery.plan.availability-zone.recovery.type.mapping",
+                      protection_cluster_availability_zone: {id: 1},
+                      recovery_cluster_availability_zone: {id: 6}
+                    }],
+                    external_networks: [{
+                      recovery_type_code: "dr.recovery.plan.network.recovery.type.mapping",
+                      protection_cluster_external_network: {id: 3},
+                      recovery_cluster_external_network: {id: 12}
+                    }],
+                    routers: [{
+                      recovery_type_code: "dr.recovery.plan.network.recovery.type.mirroring",
+                      protection_cluster_router: {id: 1},
+                      recovery_cluster_external_network: {id: 11},
+                      recovery_cluster_external_routing_interfaces: [
+                        {subnet: {id: 21}, ip_address: "10.1.1.100"}
+                      ]
+                    }],
+                    storages: [{
+                      recovery_type_code: "dr.recovery.plan.storage.recovery.type.mapping",
+                      protection_cluster_storage: {id: 1},
+                      recovery_cluster_storage: {id: 13}
+                    }],
+                    instances: [
+                      {
+                        recovery_type_code: "dr.recovery.plan.instance.recovery.type.mirroring",
+                        protection_cluster_instance: {id: 1},
+                        recovery_cluster_availability_zone: {id: 6},
+                        recovery_cluster_hypervisor: {id: 1},
+                        auto_start_flag: true,
+                        dependencies: []
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.instance.recovery.type.mirroring",
+                        protection_cluster_instance: {id: 2},
+                        recovery_cluster_hypervisor: {id: 1},
+                        auto_start_flag: true,
+                        diagnosis_flag: true,
+                        diagnosis_method_code: "dr.recovery.plan.instance.diagnosis.method.tcp-socket",
+                        diagnosis_method_data: "{\"Protocol\": \"TCP\", \"Port\": 8000}",
+                        diagnosis_timeout: 600,
+                        dependencies: [{id: 1}]
+                      }
+                    ],
+                    volumes: [
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 1}
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 2},
+                        recovery_cluster_storage: {id: 13}
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 3}
+                      }
+                    ]
+                  }
+                }
+              }
+            modification:
+              value: {
+                plan: {
+                  id: 1,
+                  name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+                  snapshot_retention_count: 12,
+                  remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+                  detail: {
+                    tenants: [{
+                      recovery_type_code: "dr.recovery.plan.tenant.recovery.type.mirroring",
+                      protection_cluster_tenant: {id: 1},
+                      recovery_cluster_tenant_mirror_name: "admin-mirror"
+                    }],
+                    availability_zones: [{
+                      recovery_type_code: "dr.recovery.plan.availability-zone.recovery.type.mapping",
+                      protection_cluster_availability_zone: {id: 1},
+                      recovery_cluster_availability_zone: {id: 6}
+                    }],
+                    external_networks: [{
+                      recovery_type_code: "dr.recovery.plan.network.recovery.type.mapping",
+                      protection_cluster_external_network: {id: 3},
+                      recovery_cluster_external_network: {id: 12}
+                    }],
+                    routers: [{
+                      recovery_type_code: "dr.recovery.plan.network.recovery.type.mirroring",
+                      protection_cluster_router: {id: 1},
+                      recovery_cluster_external_network: {id: 11},
+                      recovery_cluster_external_routing_interfaces: [
+                        {subnet: {id: 21}, ip_address: "10.1.1.100"}
+                      ]
+                    }],
+                    storages: [{
+                      recovery_type_code: "dr.recovery.plan.storage.recovery.type.mapping",
+                      protection_cluster_storage: {id: 1},
+                      recovery_cluster_storage: {id: 13}
+                    }],
+                    instances: [
+                      {
+                        recovery_type_code: "dr.recovery.plan.instance.recovery.type.mirroring",
+                        protection_cluster_instance: {id: 1},
+                        recovery_cluster_availability_zone: {id: 6},
+                        recovery_cluster_hypervisor: {id: 1},
+                        auto_start_flag: true,
+                        dependencies: []
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.instance.recovery.type.mirroring",
+                        protection_cluster_instance: {id: 2},
+                        recovery_cluster_hypervisor: {id: 1},
+                        auto_start_flag: true,
+                        diagnosis_flag: true,
+                        diagnosis_method_code: "dr.recovery.plan.instance.diagnosis.method.tcp-socket",
+                        diagnosis_method_data: "{\"Protocol\": \"TCP\", \"Port\": 8000}",
+                        diagnosis_timeout: 600,
+                        dependencies: [{id: 1}]
+                      }
+                    ],
+                    volumes: [
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 1}
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 2},
+                        recovery_cluster_storage: {id: 13}
+                      },
+                      {
+                        recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                        protection_cluster_volume: {id: 3}
+                      }
+                    ]
+                  }
+                }
+              }
+
+  responses:
+    RecoveryPlans:
+      description: 재해복구계획 목록을 반환한다.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              plans:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/RecoveryPlan'
+              pagination:
+                $ref: 'schema.yaml#/Pagination'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            plans: [
+              {
+                id: 1,
+                protection_cluster: {
+                  id: 1, type_code: "cluster.type.openstack",
+                  name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+                },
+                recovery_cluster: {
+                  id: 2, type_code: "cluster.type.openstack",
+                  name: "광주센터 OpenStack #001", remarks: "광주센터 OpenStack #001"
+                },
+                name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+                snapshot_retention_count: 12,
+                remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+                direction_code: "dr.recovery.direction.failover",
+                state_code: "dr.recovery.plan.state.warning",
+                abnormal_state_reasons: {
+                  warning: [
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.tenant.mirror-name-update-required",
+                      contents: "{\"TenantName\": \"admin\", \"MirrorName\": \"admin-mirror\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.availability-zone.availability-zone-update-required",
+                      contents: "{\"AvailabilityZoneName\": \"nova\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.external-network.external-network-update-required",
+                      contents: "{\"NetworkName\": \"private network #1\", \"ExternalNetworkName\": \"public network\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.router.external-network-update-required",
+                      contents: "{\"RouterName\": \"router #1\", \"ExternalNetworkName\": \"public network\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.storage.storage-update-required",
+                      contents: "{\"StorageName\": \"ceph #001\", \"RecoveryClusterStorageName\": \"ceph #001\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.instance.availability-zone-update-required",
+                      contents: "{\"InstanceName\": \"instance #001\", \"AvailabilityZone\": \"nova\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.floating-ip.unavailable-recovery",
+                      contents: "{\"InstanceName\": \"instance #001\", \"FloatingIPAddress\": \"10.1.1.220\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.volume.unavailable-recovery",
+                      contents: "{\"InstanceNames\": [\"instance #001\"], \"VolumeName\": \"volume #003\", \"StorageName\": \"ceph #001\"}"
+                    },
+                    {
+                      code: "dr.recovery.plan.state.warning.reason.volume.storage-update-required",
+                      contents: "{\"InstanceName\": [\"instance #001\"], \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                    }
+                  ]
+                },
+                created_at: 1611802679,
+                updated_at: 1611802679,
+                updatable: true
+              },
+              {
+                id: 2,
+                protection_cluster: {
+                  id: 1, type_code: "cluster.type.openstack",
+                  name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+                },
+                recovery_cluster: {
+                  id: 2, type_code: "cluster.type.openstack",
+                  name: "부산센터 OpenStack #001", remarks: "부산센터 OpenStack #001"
+                },
+                name: "부산센터 OpenStack #001 로 복구하기 위한 계획",
+                snapshot_retention_count: 12,
+                remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 부산센터 OpenStack #001 로 복구하기 위한 계획",
+                direction_code: "dr.recovery.direction.failover",
+                state_code: "dr.recovery.plan.state.normal",
+                created_at: 1611802679,
+                updated_at: 1611802679,
+                updatable: true
+              }
+            ],
+            pagination: {
+              page: 1,
+              total_page: 10,
+              total_items: 100
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    RecoveryPlan:
+      description: 재해복구계획 상세정보를 반환한다.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              plan:
+                $ref: 'schema.yaml#/RecoveryPlan'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            plan: {
+              id: 1,
+              protection_cluster: {
+                id: 1, type_code: "cluster.type.openstack",
+                name: "대전센터 OpenStack #001", remarks: "대전센터 OpenStack #001"
+              },
+              recovery_cluster: {
+                id: 2, type_code: "cluster.type.openstack",
+                name: "광주센터 OpenStack #001", remarks: "광주센터 OpenStack #001"
+              },
+              name: "광주센터 OpenStack #001 로 복구하기 위한 계획",
+              snapshot_retention_count: 12,
+              remarks: "대전센터 OpenStack #001 재해발생시 ERP 시스템을 광주센터 OpenStack #001 로 복구하기 위한 계획",
+              direction_code: "dr.recovery.direction.failover",
+              state_code: "dr.recovery.plan.state.warning",
+              abnormal_state_reasons: {
+                warning: [
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.tenant.mirror-name-update-required",
+                    contents: "{\"TenantName\": \"admin\", \"MirrorName\": \"admin-mirror\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.availability-zone.availability-zone-update-required",
+                    contents: "{\"AvailabilityZoneName\": \"nova\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.external-network.external-network-update-required",
+                    contents: "{\"NetworkName\": \"private network #1\", \"ExternalNetworkName\": \"public network\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.router.external-network-update-required",
+                    contents: "{\"RouterName\": \"router #1\", \"ExternalNetworkName\": \"public network\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.storage.storage-update-required",
+                    contents: "{\"StorageName\": \"ceph #001\", \"RecoveryClusterStorageName\": \"ceph #001\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.instance.availability-zone-update-required",
+                    contents: "{\"InstanceName\": \"instance #001\", \"AvailabilityZone\": \"nova\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.floating-ip.unavailable-recovery",
+                    contents: "{\"InstanceName\": \"instance #001\", \"FloatingIPAddress\": \"10.1.1.220\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.volume.unavailable-recovery",
+                    contents: "{\"InstanceNames\": [\"instance #001\"], \"VolumeName\": \"volume #003\", \"StorageName\": \"ceph #001\"}"
+                  },
+                  {
+                    code: "dr.recovery.plan.state.warning.reason.volume.storage-update-required",
+                    contents: "{\"InstanceName\": [\"instance #001\"], \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                  }
+                ]
+              },
+              created_at: 1611802679,
+              updated_at: 1611802679,
+              detail: {
+                tenants: [{
+                  recovery_type_code: "dr.recovery.plan.tenant.recovery.type.mirroring",
+                  protection_cluster_tenant: {
+                    id: 1, uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25", name: "admin", enabled: true,
+                    description: "Admin tenant",
+                    quotas: [
+                      { key: "instances", value: 0 },
+                      { key: "key_pairs", value: 0 },
+                      { key: "metadata_items", value: 0 },
+                      { key: "ram", value: 0 },
+                      { key: "server_groups", value: 0 },
+                      { key: "server_group_members", value: 0 },
+                      { key: "fixed_ips", value: 0 },
+                      { key: "floating_ips", value: 0 },
+                      { key: "networks", value: 0 },
+                      { key: "security_group_rules", value: 0 },
+                      { key: "security_groups", value: 0 },
+                      { key: "injected_file_content_bytes", value: 0 },
+                      { key: "injected_file_path_bytes", value: 0 },
+                      { key: "injected_files", value: 0 },
+                      { key: "backup_gigabytes", value: 0 },
+                      { key: "backups", value: 0 },
+                      { key: "gigabytes", value: 0 },
+                      { key: "gigabytes_{volume_type}", value: 0 },
+                      { key: "groups", value: 0 },
+                      { key: "per_volume_gigabytes", value: 0 },
+                      { key: "snapshots", value: 0 },
+                      { key: "snapshots_{volume_type}", value: 0 },
+                      { key: "volumes", value: 0 },
+                      { key: "volumes_{volume_type}", value: 0 },
+                      { key: "floatingip", value: 0 },
+                      { key: "network", value: 0 },
+                      { key: "port", value: 0 },
+                      { key: "rbac_policy", value: 0 },
+                      { key: "router", value: 0 },
+                      { key: "security_group", value: 0 },
+                      { key: "security_group_rule", value: 0 },
+                      { key: "subnet", value: 0 },
+                      { key: "subnetpool", value: 0 }
+                    ]
+                  },
+                  recovery_cluster_tenant_mirror_name: "admin-mirror",
+                  recovery_cluster_tenant_mirror_name_update_flag: true,
+                  recovery_cluster_tenant_mirror_name_update_reason: {
+                    code: "dr.recovery.plan.tenant.mirror-name-duplicated-in-recovery-cluster",
+                    contents: "{\"TenantName\": \"admin\", \"MirrorName\": \"admin-mirror\"}"
+                  }
+                }],
+                availability_zones: [{
+                  recovery_type_code: "dr.recovery.plan.availability-zone.recovery.type.mapping",
+                  protection_cluster_availability_zone: {
+                    id: 1, name: "nova"
+                  },
+                  recovery_cluster_availability_zone: {
+                    id: 6, name: "nova"
+                  },
+                  recovery_cluster_availability_zone_update_flag: true,
+                  recovery_cluster_availability_zone_update_reason: {
+                    code: "dr.recovery.plan.availability-zone.not-enough-resource",
+                    contents: "{\"AvailabilityZoneName\": \"nova\"}"
+                  }
+                }],
+                external_networks: [{
+                  recovery_type_code: "dr.recovery.plan.network.recovery.type.mapping",
+                  protection_cluster_external_network: {
+                    id: 3, external_flag: true, type_code: "openstack.network.type.flat",
+                    uuid: "ce652521-21cb-aae2-5551-a6ce64239736",
+                    name: "public network #1", description: "public flat network",
+                    subnets: [
+                      {
+                        id: 4, uuid: "2fb78965-g8c7-5e8e-964e-4d96ca20b698",
+                        name: "subnet #2", description: "subnet description",
+                        network_cidr: "11.1.1.0/24", dhcp_enabled: false,
+                        gateway_enabled: true, gateway_ip_address: "11.1.1.0.1",
+                        nameservers: [{ id: 1, nameserver: "8.8.8.8" }]
+                      }
+                    ],
+                    floating_ips: [
+                      {
+                        id: 1, uuid: "2da474b7-835b-4b22-9ae8-903ad470b9aa",
+                        description: "floating ip description",
+                        ip_address: "10.1.1.220", status: "ACTIVE"
+                      }
+                    ]
+                  },
+                  recovery_cluster_external_network: {
+                    id: 11, external_flag: true, type_code: "openstack.network.type.flat",
+                    uuid: "a7302506-5734-4ad0-8098-eeec7758db63",
+                    name: "public network", description: "public flat network",
+                    subnets: [
+                      {
+                        id: 21, uuid: "d2f97afd-7ae8-4e8e-b16d-33b9addcf61e",
+                        name: "public subnet #1", description: "subnet description",
+                        network_cidr: "10.1.1.0/24", dhcp_enabled: false,
+                        gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                        nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                      }
+                    ]
+                  },
+                  recovery_cluster_external_network_update_flag: true,
+                  recovery_cluster_external_network_update_reason: {
+                    code: "dr.recovery.plan.external-network.external-network-removed",
+                    contents: "{\"NetworkName\": \"public network #1\", \"ExternalNetworkName\": \"public network\"}"
+                  }
+                }],
+                routers: [{
+                  recovery_type_code: "dr.recovery.plan.network.recovery.type.mirroring",
+                  protection_cluster_router: {
+                    id: 1, uuid: "397cf931-7a31-43fe-98c6-e9a8e7d5a57a",
+                    name: "router #1", description: "router description",
+                    status: "ACTIVE", state: "up",
+                    internal_routing_interfaces: [
+                      {
+                        network: {
+                          id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                          uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                          name: "private network #1", description: "private flat network"
+                        },
+                        subnet: {
+                          id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                          name: "subnet #1",
+                          network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                          dhcp_pools: [
+                            {id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                            {id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                          ],
+                          gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                          nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                        },
+                        ip_address: "192.168.1.11"
+                      }
+                    ],
+                    external_routing_interfaces: [
+                      {
+                        network: {
+                          id: 1, external_flag: true, type_code: "openstack.network.type.flat",
+                          uuid: "6ea9b9cf-50b1-43de-86c0-456038530448",
+                          name: "public network", description: "public flat network"
+                        },
+                        subnet: {
+                          id: 1, uuid: "bd797d18-8858-4cc5-b1cb-b5ad0cd1841c",
+                          name: "subnet #0",
+                          network_cidr: "10.1.1.0/24",
+                          gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                          nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                        },
+                        ip_address: "10.1.1.100"
+                      }
+                    ],
+                    extra_routes: [
+                      {
+                        id: 1, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                      }
+                    ]
+                  },
+                  recovery_cluster_external_network: {
+                    id: 11, external_flag: true, type_code: "openstack.network.type.flat",
+                    uuid: "a7302506-5734-4ad0-8098-eeec7758db63",
+                    name: "public network", description: "public flat network",
+                    subnets: [
+                      {
+                        id: 21, uuid: "d2f97afd-7ae8-4e8e-b16d-33b9addcf61e",
+                        name: "public subnet #1", description: "subnet description",
+                        network_cidr: "10.1.1.0/24", dhcp_enabled: false,
+                        gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                        nameservers: [{id: 1, nameserver: "8.8.8.8"}]
+                      }
+                    ]
+                  },
+                  recovery_cluster_external_network_update_flag: true,
+                  recovery_cluster_external_network_update_reason: {
+                    code: "dr.recovery.plan.router.external-network-removed",
+                    contents: "{\"RouterName\": \"router #1\", \"ExternalNetworkName\": \"public network\"}"
+                  },
+                  recovery_cluster_external_routing_interfaces: [{
+                    subnet: {
+                      id: 21, uuid: "d2f97afd-7ae8-4e8e-b16d-33b9addcf61e",
+                      name: "public subnet #1", description: "subnet description",
+                      network_cidr: "10.1.1.0/24",
+                      gateway_enabled: true, gateway_ip_address: "10.1.1.254"
+                    },
+                    ip_address: "10.1.1.100"
+                  }]
+                }],
+                storages: [
+                  {
+                    recovery_type_code: "dr.recovery.plan.storage.recovery.type.mapping",
+                    protection_cluster_storage: {
+                      id: 1, type_code: "openstack.storage.type.ceph",
+                      uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    },
+                    recovery_cluster_storage: {
+                      id: 13, type_code: "cluster.storage.type.ceph",
+                      uuid: "2d2b8ecc-805b-4c2f-b711-674709fdccd4",
+                      name: "ceph #002", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    },
+                    unavailable_flag: true,
+                    unavailable_reason: {
+                      code: "dr.recovery.plan.storage.backend_name-changed",
+                      contents: "{\"StorageName\": \"ceph #001\", \"RecoveryClusterStorageName\": \"ceph #002\"}"
+                    }
+                  },
+                  {
+                    recovery_type_code: "dr.recovery.plan.storage.recovery.type.mapping",
+                    protection_cluster_storage: {
+                      id: 2, type_code: "openstack.storage.type.ceph",
+                      uuid: "effd6400-8873-11ec-a8a3-0242ac120002",
+                      name: "ceph #002", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    },
+                    recovery_cluster_storage: {
+                      id: 14, type_code: "cluster.storage.type.ceph",
+                      uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                      name: "ceph #001", description: "ceph storage",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    },
+                    recovery_cluster_storage_update_flag: true,
+                    recovery_cluster_storage_update_reason: {
+                      code: "dr.recovery.plan.storage.not-enough-capacity",
+                      contents: "{\"StorageName\": \"ceph #002\", \"RecoveryClusterStorageName\": \"ceph #001\"}"
+                    }
+                  }
+                ],
+                instances: [
+                  {
+                    recovery_type_code: "dr.recovery.plan.instance.recovery.type.mirroring",
+                    protection_cluster_instance: {
+                      id: 1, uuid: "08b3bf8b-0e17-41fa-9836-acbec782716b",
+                      name: "instance #001", description: "instance description",
+                      cluster: {
+                        id: 1, name: "대전센터 OpenStack #001",
+                        type_code: "cluster.type.openstack",
+                        remarks: "대전센터 OpenStack #001"
+                      },
+                      tenant: {
+                        id: 1, name: "admin", enabled: true,
+                        uuid: "04868583-dcb7-4a01-b0f8-2951b6243c25"
+                      },
+                      availability_zone: {
+                        id: 1, name: "nova"
+                      },
+                      hypervisor: {
+                        id: 1, hostname: "localhost", ip_address: "1.1.1.1",
+                        vcpu_total_cnt: 32, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000
+                      },
+                      keypair: {
+                        id: 1, name: "keypair #1", fingerprint: "da:47:93:b4:3a:90:5b:50:1f:20:a8:f9:b7:a1:d0:e1",
+                        public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCw85CkkctyDZTwveoVky/NAZggGnjqp3EPh2I62fY2mERYd9jqf9ZcSxFGbx449Lq8UySPSPdIESYUvJoqTVgjfN0DxSoNXDW58Yam18KoixqVWyIk+l/n1T195ZX8bU00CpYoO2vqLNQ1zl8PRhDZ/WtrxT9SfHl/HLOwUTGjDjrd84JjCyyIclPjwIPdGOn/wRd8JK8643/CpIVb2/ZvTa6nf8hb/l4LEq5TVUekV3mGN74/UmfyQ1LC43pbsoxfb51MNmIEJIT1dBdc/aP4HQf2Mp901Ee588xvFFJXHcCvNM4birtYxPvN1lxhH4AIeL7Hz+sDTVrSyJmH92fXtuI+uCrl/Izkuzp6Jwk9d4fWihxpjksvI5H/f2XxnSWh+EHoCvW0k5pkNgHXPjMce4AlaqGtrVWyTxMd3V6OMxXr7p/4GfapTWvc8tIyGt9od5h/Wket5df3YlaxY8RMK2dPJyTi8IdxHL2TFmUsCxyVuEzl+YLUWs/YpX3oA5k= khlee@localhost.localdomain",
+                        type_code: "openstack.keypair.type.ssh"
+                      },
+                      spec: {
+                        id: 1, uuid: "1", name: "small server spec #1", description: "flavor description",
+                        vcpu_total_cnt: 4, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000,
+                        swap_total_bytes: 4295000, ephemeral_total_bytes: 4295000,
+                        extra_specs: []
+                      },
+                      networks: [
+                        {
+                          id: 1,
+                          network: {
+                            id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                            uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                            name: "private network #1", description: "private flat network"
+                          },
+                          subnet: {
+                            id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                            name: "subnet #1",
+                            network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                            dhcp_pools: [
+                              {id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                              {id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                            ],
+                            gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                            nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                          },
+                          floating_ip: {
+                            id: 1, uuid: "2da474b7-835b-4b22-9ae8-903ad470b9aa",
+                            description: "floating ip description",
+                            ip_address: "10.1.1.220"
+                          },
+                          dhcp_flag: true,
+                          ip_address: "192.168.1.212"
+                        }
+                      ],
+                      routers: [
+                        {
+                          id: 1, uuid: "397cf931-7a31-43fe-98c6-e9a8e7d5a57a",
+                          name: "router #1", description: "router description",
+                          internal_routing_interfaces: [
+                            {
+                              network: {
+                                id: 2, external_flag: false, type_code: "openstack.network.type.flat",
+                                uuid: "ce652521-431b-4572-8e59-46ed53129736",
+                                name: "private network #1", description: "private flat network"
+                              },
+                              subnet: {
+                                id: 2, uuid: "1ea67854-f8b6-4f7f-964f-3c96ca20b698",
+                                name: "subnet #1",
+                                network_cidr: "192.168.1.0/24", dhcp_enabled: true,
+                                dhcp_pools: [
+                                  {id: 1, start_ip_address: "192.168.1.100", end_ip_address: "192.168.1.150"},
+                                  {id: 2, start_ip_address: "192.168.1.200", end_ip_address: "192.168.1.255"}
+                                ],
+                                gateway_enabled: true, gateway_ip_address: "192.168.1.1",
+                                nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                              },
+                              ip_address: "192.168.1.11"
+                            }
+                          ],
+                          external_routing_interfaces: [
+                            {
+                              network: {
+                                id: 1, external_flag: true, type_code: "openstack.network.type.flat",
+                                uuid: "6ea9b9cf-50b1-43de-86c0-456038530448",
+                                name: "public network", description: "public flat network"
+                              },
+                              subnet: {
+                                id: 1, uuid: "bd797d18-8858-4cc5-b1cb-b5ad0cd1841c",
+                                name: "subnet #0",
+                                network_cidr: "10.1.1.0/24",
+                                gateway_enabled: true, gateway_ip_address: "10.1.1.254",
+                                nameservers: [ { id: 1, nameserver: "8.8.8.8" } ]
+                              },
+                              ip_address: "10.1.1.100"
+                            }
+                          ],
+                          extra_routes: [
+                            {
+                              id: 1, destination: "172.12.0.0/16", nexthop: "10.1.1.55"
+                            }
+                          ]
+                        }
+                      ],
+                      security_groups: [
+                        {
+                          id: 1, uuid: "22bdae7c-8d34-4f40-b79a-b3e379ff27dc",
+                          name: "security group #1", description: "security group description",
+                          rules: [
+                            {
+                              id: 1, uuid: "68a31847-9bb4-46f6-9b21-5e38a9f75079",
+                              direction: "ingress", description: "security group rule description",
+                              network_cidr: "0.0.0.0/0", port_range_max: 80, port_range_min: 80, protocol: "tcp",
+                              remote_security_group: {
+                                id: 2, uuid: "a406c6bd-afd2-4c8a-8b6e-fe104038056e",
+                                name: "security group #2", description: "security group description"
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      volumes: [
+                        {
+                          storage: {
+                            id: 1, type_code: "openstack.storage.type.ceph",
+                            uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                            name: "ceph #001", description: "ceph storage"
+                          },
+                          volume: {
+                            id: 1, uuid: "a5bac8fd-de7d-4646-b8ec-02505e4f169a", name: "volume #001",
+                            size_bytes: 42950000, multiattach: true, bootable: false, readonly: false
+                          },
+                          device_path: "/dev/sdc",
+                          boot_index: 0
+                        },
+                        {
+                          storage: {
+                            id: 1, type_code: "openstack.storage.type.ceph",
+                            uuid: "646d7a47-9c93-4822-a566-cbc61d6ec8b3",
+                            name: "ceph #001", description: "ceph storage"
+                          },
+                          volume: {
+                            id: 2, uuid: "ac73cddf-f1c3-4358-bf07-e0b36a0751b6", name: "volume #002",
+                            size_bytes: 42950000, multiattach: false, bootable: false, readonly: false
+                          },
+                          device_path: "/dev/sdd",
+                          boot_index: 1
+                        }
+                      ]
+                    },
+                    recovery_cluster_availability_zone: {
+                      id: 6, name: "nova"
+                    },
+                    recovery_cluster_availability_zone_update_flag: true,
+                    recovery_cluster_availability_zone_update_reason: {
+                      code: "dr.recovery.plan.instance.availability-zone.not-enough-resource",
+                      contents: "{\"InstanceName\": \"instance #001\", \"AvailabilityZone\": \"nova\"}"
+                    },
+                    recovery_cluster_hypervisor: {
+                      id: 15, hostname: "localhost", ip_address: "1.1.1.1",
+                      vcpu_total_cnt: 32, mem_total_bytes: 4295000000, disk_total_bytes: 4295000000
+                    },
+                    auto_start_flag: true,
+                    diagnosis_flag: true,
+                    diagnosis_method_code: "dr.recovery.plan.instance.diagnosis.method.tcp-socket",
+                    diagnosis_method_data: "{\"Protocol\": \"TCP\", \"Port\": 8000}",
+                    diagnosis_timeout: 600,
+                    dependencies: []
+                  }
+                ],
+                floating_ips: [{
+                  protection_cluster_floating_ip: {
+                    id: 1, uuid: "2da474b7-835b-4b22-9ae8-903ad470b9aa",
+                    description: "floating ip description",
+                    ip_address: "10.1.1.220"
+                  },
+                  unavailable_flag: true,
+                  unavailable_reason: {
+                    code: "dr.recovery.plan.floating-ip.mirror-ip-address-duplicated",
+                    contents: "{\"InstanceName\": \"instance #001\", \"FloatingIPAddress\": \"10.1.1.220\"}"
+                  }
+                }],
+                volumes: [
+                  {
+                    recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                    protection_cluster_volume: {
+                      id: 1, uuid: "a5bac8fd-de7d-4646-b8ec-02505e4f169a", name: "volume #001",
+                      size_bytes: 42950000, shared_flag: true
+                    },
+                    unavailable_flag: true,
+                    unavailable_reason: {
+                      code: "dr.recovery.plan.volume.unsupported-storage-type",
+                      contents: "{\"InstanceName\": [\"instance #001\"], \"VolumeName\": \"volume #001\", \"StorageName\": \"ceph #001\"}"
+                    }
+                  },
+                  {
+                    recovery_type_code: "dr.recovery.plan.volume.recovery.type.mirroring",
+                    protection_cluster_volume: {
+                      id: 2, uuid: "ac73cddf-f1c3-4358-bf07-e0b36a0751b6", name: "volume #002",
+                      size_bytes: 42950000, shared_flag: false
+                    },
+                    recovery_cluster_storage: {
+                      id: 13, uuid: "21f16dcb-5dcf-417b-a292-2e3fe47203e4",
+                      name: "ceph #001", type_code: "cluster.storage.type.ceph",
+                      capacity_bytes: 4295000000, used_bytes: 42950000
+                    },
+                    recovery_cluster_storage_update_flag: true,
+                    recovery_cluster_storage_update_reason: {
+                      code: "dr.recovery.plan.volume.storage.not-enough-capacity",
+                      contents: "{\"InstanceName\": [\"instance #001\"], \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                    }
+                  }
+                ]
+              },
+              updatable: true
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }
+
+    AbnormalStateReasons:
+      description: 등록/수정하려는 재해복구계획의 경고사유 목록을 반환한다.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              reasons:
+                type: array
+                items:
+                  $ref: 'schema.yaml#/AbnormalStateReasons'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            reasons: {
+              warning: [
+                {
+                  code: "dr.recovery.plan.state.warning.reason.tenant.mirror-name-update-required",
+                  contents: "{\"TenantName\": \"admin\", \"MirrorName\": \"admin-mirror\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.availability-zone.availability-zone-update-required",
+                  contents: "{\"AvailabilityZoneName\": \"nova\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.external-network.external-network-update-required",
+                  contents: "{\"NetworkName\": \"private network #1\", \"ExternalNetworkName\": \"public network\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.router.external-network-update-required",
+                  contents: "{\"RouterName\": \"router #1\", \"ExternalNetworkName\": \"public network\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.storage.storage-update-required",
+                  contents: "{\"StorageName\": \"ceph #001\", \"RecoveryClusterStorageName\": \"ceph #001\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.instance.availability-zone-update-required",
+                  contents: "{\"InstanceName\": \"instance #001\", \"AvailabilityZone\": \"nova\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.floating-ip.unavailable-recovery",
+                  contents: "{\"InstanceName\": \"instance #001\", \"FloatingIPAddress\": \"10.1.1.220\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.volume.unavailable-recovery",
+                  contents: "{\"InstanceNames\": [\"instance #001\"], \"VolumeName\": \"volume #003\", \"StorageName\": \"ceph #001\"}"
+                },
+                {
+                  code: "dr.recovery.plan.state.warning.reason.volume.storage-update-required",
+                  contents: "{\"InstanceName\": [\"instance #001\"], \"VolumeName\": \"volume #002\", \"StorageName\": \"ceph #001\"}"
+                }
+              ]
+            },
+            message: {
+              code: "message code",
+              contents: "message contents"
+            }
+          }

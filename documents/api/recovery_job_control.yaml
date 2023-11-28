@@ -1,0 +1,522 @@
+Pause:
+  post:
+    summary: 재해복구작업 일시중지
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05131
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+ExtendPauseTime:
+  post:
+    summary: 재해복구작업 일시중지 시간 연장
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05132
+    tags:
+      - "Recovery Job"
+    requestBody:
+      $ref: '#/components/requestBodies/ExtendRecoveryJobPausingTime'
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Resume:
+  post:
+    summary: 재해복구작업 재개
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05141
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Cancel:
+  post:
+    summary: 재해복구작업 취소
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05151
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Rollback:
+  Simulation:
+    post:
+      summary: 재해복구작업 롤백 (모의훈련)
+      description: 설명추가
+      externalDocs:
+        url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05161
+      tags:
+        - "Recovery Job"
+      parameters:
+        - $ref: '#/components/parameters/ProtectionGroupID'
+        - $ref: '#/components/parameters/RecoveryJobID'
+      responses:
+        200:
+          $ref: 'response.yaml#/Message'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthenticated
+        403:
+          description: Unauthorized
+        404:
+          description: Not Found
+        412:
+          description: Precondition Failed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
+
+  Migration:
+    post:
+      summary: 재해복구작업 롤백 (재해복구)
+      description: 설명추가
+      externalDocs:
+        url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05162
+      tags:
+        - "Recovery Job"
+      parameters:
+        - $ref: '#/components/parameters/ProtectionGroupID'
+        - $ref: '#/components/parameters/RecoveryJobID'
+      responses:
+        200:
+          $ref: 'response.yaml#/Message'
+        400:
+          description: Bad Request
+        401:
+          description: Unauthenticated
+        403:
+          description: Unauthorized
+        404:
+          description: Not Found
+        412:
+          description: Precondition Failed
+        500:
+          description: Internal Server Error
+        501:
+          description: Not Implemented
+        503:
+          description: Service Unavailable
+
+RetryRollback:
+  post:
+    summary: 재해복구작업 롤백 재시도
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05183
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+ExtendRollbackTime:
+  post:
+    summary: 재해복구작업 롤백 대기시간 연장
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05171
+    tags:
+      - "Recovery Job"
+    requestBody:
+      $ref: '#/components/requestBodies/ExtendRecoveryJobRollbackWaitingTime'
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+IgnoreRollback:
+  post:
+    summary: 재해복구작업 롤백 무시
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05181
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        description: "TODO: 롤백 스크립트"
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Confirm:
+  post:
+    summary: 재해복구작업 확정
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05191
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+RetryConfirm:
+  post:
+    summary: 재해복구작업 확정 재시도
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05192
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+CancelConfirm:
+  post:
+    summary: 재해복구작업 확정 취소
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05193
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+Retry:
+  post:
+    summary: 재해복구작업 재시도 (재해복구)
+    description: 설명추가
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05201
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    requestBody:
+      $ref: '#/components/requestBodies/RetryInstances'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+ForceDelete:
+  post:
+    summary: 재해복구작업 강제 삭제
+    description: 재해복구작업을 클러스터의 상태와 상관없이 강제로 삭제한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-05062
+    tags:
+      - "Recovery Job"
+    parameters:
+      - $ref: '#/components/parameters/ProtectionGroupID'
+      - $ref: '#/components/parameters/RecoveryJobID'
+    responses:
+      200:
+        $ref: 'response.yaml#/Message'
+      400:
+        description: Bad Request
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      404:
+        description: Not Found
+      412:
+        description: Precondition Failed
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  parameters:
+    ProtectionGroupID:
+      in: path
+      name: group_id
+      description: 보호그룹 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+    RecoveryJobID:
+      in: path
+      name: job_id
+      description: 재해복구작업 ID
+      required: true
+      schema:
+        type: integer
+        format: uint64
+
+  requestBodies:
+    ExtendRecoveryJobPausingTime:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              extend_time:
+                description: 연장할 시간
+                type: integer
+                format: uint32
+                minimum: 30
+                maximum: 180
+          example: {
+            extend_time: 30
+          }
+
+    ExtendRecoveryJobRollbackWaitingTime:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              extend_time:
+                description: 연장할 시간
+                type: integer
+                format: uint32
+                minimum: 30
+                maximum: 180
+          example: {
+            extend_time: 30
+          }
+
+    RetryInstances:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              recovery_point_type_code:
+                description: 데이터 시점 유형
+                type: string
+                enum:
+                  - "dr.recovery.recovery_point.type.latest"
+                  - "dr.recovery.recovery_point.type.latest_snapshot"
+                  - "dr.recovery.recovery_point.type.snapshot"
+#                  - "dr.recovery.recovery_point.type.before_n_minutes"
+              recovery_point_snapshot:
+                description: 복구할 스냅샷
+                type: object
+                allOf: [$ref: 'schema.yaml#/ProtectionGroupSnapshot']
+              instances:
+                description: 재시도할 인스턴스 목록
+                type: array
+                items:
+                  $ref: 'http://10.1.1.220/cdm/cdm-center/documents/-/raw/master/api/cdm-cluster-manager/schema.yaml#/ClusterInstance'
+          example: {
+            recovery_point_type_code: "dr.recovery.recovery_point.type.snapshot",
+            recovery_point_snapshot: {id: 1},
+            instances: [{id: 1}, {id: 2}, {id: 3}]
+          }

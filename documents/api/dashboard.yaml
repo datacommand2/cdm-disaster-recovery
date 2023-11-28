@@ -1,0 +1,420 @@
+SummaryClusters:
+  get:
+    summary: 클러스터 요약
+    description: 클러스터 요약 정보를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10011
+    tags:
+      - "Dashboard"
+    responses:
+      200:
+        $ref: '#/components/responses/SummaryClusters'
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+SummaryGroups:
+  get:
+    summary: 보호 그룹 요약
+    description: 보호 그룹 요약 정보를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10021
+    tags:
+      - "Dashboard"
+    responses:
+      200:
+        $ref: '#/components/responses/SummaryGroups'
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+SummaryInstances:
+  get:
+    summary: 인스턴스 요약
+    description: 인스턴스 요약 정보를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10031
+    tags:
+      - "Dashboard"
+    responses:
+      200:
+        $ref: '#/components/responses/SummaryInstances'
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+SummaryVolumes:
+  get:
+    summary: 볼륨 요약
+    description: 볼륨 요약 정보를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10041
+    tags:
+      - "Dashboard"
+    responses:
+      200:
+        $ref: '#/components/responses/SummaryVolumes'
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+ClusterRelationships:
+  get:
+    summary: 클러스터 관계 목록 조회
+    description: 클러스터 관계를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10061
+    tags:
+      - "Dashboard"
+    parameters:
+      - $ref: 'parameter.yaml#/Pagination/Limit'
+      - $ref: 'parameter.yaml#/Pagination/Offset'
+    responses:
+      200:
+        $ref: '#/components/responses/ClusterRelationships'
+      204:
+        description: No Contents
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+SummaryJobs:
+  get:
+    summary: 재해 복구 작업 요약
+    description: 재해 복구 작업 요약 정보를 조회한다.
+    externalDocs:
+      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-10051
+    tags:
+      - "Dashboard"
+    parameters:
+      - $ref: '#/components/parameters/RecoveryType'
+      - $ref: '#/components/parameters/StartDate'
+      - $ref: '#/components/parameters/EndDate'
+    responses:
+      200:
+        $ref: '#/components/responses/SummaryJobs'
+      401:
+        description: Unauthenticated
+      403:
+        description: Unauthorized
+      500:
+        description: Internal Server Error
+      501:
+        description: Not Implemented
+      503:
+        description: Service Unavailable
+
+components:
+  schemas:
+    ClusterRelationship:
+      description: 클러스터 관계
+      type: object
+      properties:
+        protection_cluster:
+          $ref: 'http://10.1.1.220/cdm/cdm-center/documents/-/raw/master/api/cdm-cluster-manager/schema.yaml#/Cluster'
+        recovery_cluster:
+          $ref: 'http://10.1.1.220/cdm/cdm-center/documents/-/raw/master/api/cdm-cluster-manager/schema.yaml#/Cluster'
+        state_code:
+          description: 클러스터 관계 상태
+          type: string
+          enum:
+            - "dr.cluster.relationship.state.normal"
+            - "dr.cluster.relationship.state.warning"
+            - "dr.cluster.relationship.state.critical"
+            - "dr.cluster.relationship.state.emergency"
+        plans:
+          type: array
+          items:
+            type: object
+            allOf: [ $ref: 'schema.yaml#/RecoveryPlan' ]
+            properties:
+              group:
+                $ref: 'schema.yaml#/ProtectionGroup'
+
+  parameters:
+    RecoveryType:
+      in: query
+      name: recovery_type
+      required: true
+      description: 복구 유형
+      schema:
+        type: string
+        enum:
+          - "dr.recovery.type.simulation"
+          - "dr.recovery.type.migration"
+
+    StartDate:
+      in: query
+      name: start_date
+      schema:
+        type: integer
+        format: int64
+
+    EndDate:
+      in: query
+      name: end_date
+      schema:
+        type: integer
+        format: int64
+
+  responses:
+    SummaryClusters:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              summary:
+                type: object
+                properties:
+                  total_cluster:
+                    description: 모든 클러스터 수
+                    type: integer
+                    format: uint64
+                  active_cluster:
+                    description: 활성화 클러스터 수
+                    type: integer
+                    format: uint64
+                  inactive_cluster:
+                    description: 비활성화 클러스터 수
+                    type: integer
+                    format: uint64
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "summary": {
+              "total_cluster": 3,
+              "active_cluster": 3,
+              "inactive_cluster": 0
+            },
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }
+
+    SummaryGroups:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              summary:
+                type: object
+                properties:
+                  total_group:
+                    description: 모든 보호 그룹 수
+                    type: integer
+                    format: uint64
+                  normal_group:
+                    description: normal 보호 그룹 수
+                    type: integer
+                    format: uint64
+                  warning_group:
+                    description: warning 보호 그룹 수
+                    type: integer
+                    format: uint64
+                  critical_group:
+                    description: critical 보호 그룹 수
+                    type: integer
+                    format: uint64
+                  emergency_group:
+                    description: emergency 보호 그룹 수
+                    type: integer
+                    format: uint64
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "summary": {
+              "total_group": 23,
+              "normal_group": 21,
+              "warning_group": 1,
+              "critical_group": 1,
+              "emergency_group": 0
+            },
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }
+
+    SummaryInstances:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              summary:
+                type: object
+                properties:
+                  total_instance:
+                    description: 모든 인스턴스 수
+                    type: integer
+                    format: uint64
+                  protection_instance:
+                    description: 보호 인스턴스 수
+                    type: integer
+                    format: uint64
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "summary": {
+              "total_instance": 550,
+              "protection_instance": 517
+            },
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }
+
+
+    SummaryVolumes:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              summary:
+                type: object
+                properties:
+                  protection_volume:
+                    description: 보호 볼륨 수
+                    type: integer
+                    format: uint64
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "summary": {
+              "protection_volume": 480
+            },
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }
+
+    ClusterRelationships:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cluster_relationships:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClusterRelationship'
+              pagination:
+                $ref: 'schema.yaml#/Pagination'
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "cluster_relationships": [
+              {
+                "protection_cluster": {
+                  "id": 1,
+                  "name": "데이타커맨드",
+                  "state_code": "cluster.state.active"
+                },
+                "recovery_cluster": {
+                  "id": 1,
+                  "name": "데이타커맨드",
+                  "state_code": "cluster.state.active"
+                },
+                "state_code": "dr.cluster.relationship.state.normal",
+                "plans": [
+                  {
+                    "id": 1,
+                    "name": "데이타커맨드 본부 계획",
+                    "group": {
+                      "id": 1,
+                      "name": "데이타커맨드 보호 그룹 이름"
+                    },
+                    "state_code": "dr.recovery.plan.state.normal"
+                  }
+                ]
+              }
+            ],
+            "pagination": {
+              "page": 1,
+              "total_page": 1,
+              "total_items": 1
+            },
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }
+
+    SummaryJobs:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              summary:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      description: 일자(YYYYMMDD)
+                      type: string
+                    success:
+                      description: 성공 작업 수
+                      type: integer
+                      format: uint64
+                    fail:
+                      description: 실패 작업 수
+                      type: integer
+                      format: uint64
+              message:
+                $ref: 'schema.yaml#/Message'
+          example: {
+            "summary": [
+              {
+                "date": "20211102",
+                "success": 4,
+                "fail": 1
+              }
+            ],
+            "message": {
+              "code": "code.not.defined",
+              "contents": ""
+            }
+          }

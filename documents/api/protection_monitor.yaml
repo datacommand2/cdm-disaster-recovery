@@ -1,0 +1,203 @@
+#Cluster:
+#  get:
+#    summary: 클러스터 보호현황 모니터링 (WebSocket 프로토콜 지원)
+#    description: 설명추가
+#    externalDocs:
+#      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-07011
+#    tags:
+#      - "Protection Monitor"
+#    parameters:
+#      - $ref: '#/components/parameters/MonitorInterval'
+#      - $ref: '#/components/parameters/ClusterID'
+#    responses:
+#      200:
+#        $ref: '#/components/responses/ClustersProtectionStatus'
+#      400:
+#        description: Bad Request
+#      401:
+#        description: Unauthenticated
+#      403:
+#        description: Unauthorized
+#      404:
+#        description: Not Found
+#      500:
+#        description: Internal Server Error
+#      501:
+#        description: Not Implemented
+#      503:
+#        description: Service Unavailable
+#
+#RecoveryPlan:
+#  get:
+#    summary: 재해복구계획 보호현황 모니터링 (WebSocket 프로토콜 지원)
+#    description: 설명추가
+#    externalDocs:
+#      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-07021
+#    tags:
+#      - "Protection Monitor"
+#    parameters:
+#      - $ref: '#/components/parameters/MonitorInterval'
+#      - $ref: '#/components/parameters/PlanID'
+#    responses:
+#      200:
+#        $ref: '#/components/responses/RecoveryPlanProtectionStatus'
+#      400:
+#        description: Bad Request
+#      401:
+#        description: Unauthenticated
+#      403:
+#        description: Unauthorized
+#      404:
+#        description: Not Found
+#      500:
+#        description: Internal Server Error
+#      501:
+#        description: Not Implemented
+#      503:
+#        description: Service Unavailable
+#
+#RecoveryPlanInstance:
+#  get:
+#    summary: 재해복구대상 인스턴스 보호현황 모니터링 (WebSocket 프로토콜 지원)
+#    description: 설명추가
+#    externalDocs:
+#      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-07031
+#    tags:
+#      - "Protection Monitor"
+#    parameters:
+#      - $ref: '#/components/parameters/MonitorInterval'
+#      - $ref: '#/components/parameters/PlanID'
+#      - $ref: '#/components/parameters/InstanceID'
+#    responses:
+#      200:
+#        $ref: '#/components/responses/InstanceRecoveryPlanProtectionStatus'
+#      400:
+#        description: Bad Request
+#      401:
+#        description: Unauthenticated
+#      403:
+#        description: Unauthorized
+#      404:
+#        description: Not Found
+#      500:
+#        description: Internal Server Error
+#      501:
+#        description: Not Implemented
+#      503:
+#        description: Service Unavailable
+#
+#RecoveryPlanVolume:
+#  get:
+#    summary: 재해복구대상 볼륨 보호현황 모니터링 (WebSocket 프로토콜 지원)
+#    description: 설명추가
+#    externalDocs:
+#      url: http://10.1.1.220/cdm/cdm-disaster-recovery/documents/-/blob/master/functions.md#fc-dr-07041
+#    tags:
+#      - "Protection Monitor"
+#    parameters:
+#      - $ref: '#/components/parameters/MonitorInterval'
+#      - $ref: '#/components/parameters/PlanID'
+#      - $ref: '#/components/parameters/VolumeID'
+#    responses:
+#      200:
+#        $ref: '#/components/responses/VolumeRecoveryPlanProtectionStatus'
+#      400:
+#        description: Bad Request
+#      401:
+#        description: Unauthenticated
+#      403:
+#        description: Unauthorized
+#      404:
+#        description: Not Found
+#      500:
+#        description: Internal Server Error
+#      501:
+#        description: Not Implemented
+#      503:
+#        description: Service Unavailable
+#
+#components:
+#  parameters:
+#    MonitorInterval:
+#      in: query
+#      name: interval
+#      description: WebSocket 프로토콜을 사용할 때의 데이터 수신 간격 (sec)
+#      schema:
+#        type: integer
+#        format: uint32
+#        minimum: 2
+#        maximum: 30
+#        default: 5
+#
+#    ClusterID:
+#      in: path
+#      name: cluster_id
+#      description: 클러스터 ID
+#      required: true
+#      schema:
+#        type: integer
+#        format: uint64
+#
+#    PlanID:
+#      in: path
+#      name: plan_id
+#      description: 재해복구계획 ID
+#      required: true
+#      schema:
+#        type: integer
+#        format: uint64
+#
+#    InstanceID:
+#      in: path
+#      name: instance_id
+#      description: 재해복구대상 인스턴스 ID
+#      required: true
+#      schema:
+#        type: integer
+#        format: uint64
+#
+#    VolumeID:
+#      in: path
+#      name: volume_id
+#      description: 재해복구대상 볼륨 ID
+#      required: true
+#      schema:
+#        type: integer
+#        format: uint64
+#
+#  responses:
+#    ClustersProtectionStatus:
+#      content:
+#        application/json:
+#          schema:
+#            type: object
+#            properties:
+#              cluster:
+#                $ref: 'schema.yaml#/ClusterProtectionStatus'
+#
+#    RecoveryPlanProtectionStatus:
+#      content:
+#        application/json:
+#          schema:
+#            type: object
+#            properties:
+#              status:
+#                $ref: 'schema.yaml#/RecoveryPlanProtectionStatus'
+#
+#    InstanceRecoveryPlanProtectionStatus:
+#      content:
+#        application/json:
+#          schema:
+#            type: object
+#            properties:
+#              status:
+#                $ref: 'schema.yaml#/InstanceRecoveryPlanProtectionStatus'
+#
+#    VolumeRecoveryPlanProtectionStatus:
+#      content:
+#        application/json:
+#          schema:
+#            type: object
+#            properties:
+#              status:
+#                $ref: 'schema.yaml#/VolumeRecoveryPlanProtectionStatus'
