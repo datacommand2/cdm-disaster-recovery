@@ -89,7 +89,7 @@ func getDesiredMirrorEnvironmentMap(ctx context.Context) (map[string]*mirrorEnvi
 					VolumeID:   v.ProtectionClusterVolume.Id,
 					VolumeUUID: v.ProtectionClusterVolume.Uuid,
 				},
-				SourceAgent: &cdmReplicator.Agent{
+				SourceAgent: &mirror.Agent{
 					IP:   i.ProtectionClusterInstance.Hypervisor.IpAddress,
 					Port: uint(i.ProtectionClusterInstance.Hypervisor.AgentPort),
 				},

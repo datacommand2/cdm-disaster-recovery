@@ -10,7 +10,7 @@ require (
 	github.com/datacommand2/cdm-cloud/common v0.0.0-20231127061122-07e02be5bd0c
 	github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231127061639-e680b139acd3
 	github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231116073359-755996e851e1
-	github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231127071405-33c955c2dcbd
+	github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231128001023-78919424bb16
 	github.com/golang/protobuf v1.5.3
 	github.com/google/uuid v1.4.0
 	github.com/jinzhu/copier v0.4.0

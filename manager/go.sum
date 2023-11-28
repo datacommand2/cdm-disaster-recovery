@@ -1158,8 +1158,10 @@ github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231127061639-e680b1
 github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231116073359-755996e851e1 h1:S7NnV5DEu/QQ8c5EmFFPEdiDrK6qG1+RGs0XMf9kvss=
 github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231116073359-755996e851e1/go.mod h1:UtnRjWhLuE2o/WVBnCemIGx6T0vdUB8sIvUvgWsgCrY=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231127064704-ec552445103d/go.mod h1:2NVykxnzXOJyuq2XjmRLGTJ0LXZQ784dmvT5uUdaV2o=
-github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231127071405-33c955c2dcbd h1:+Z/DosHRzMAX9bb4Ul4OTFNF8R3chDkVMnYGxrpffrA=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231127071405-33c955c2dcbd/go.mod h1:Rf4wfvTDIIxeD9KAXsRG4f1sFtNBBs3xwIgOfcjLuO0=
+github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231128001023-78919424bb16 h1:JqP+4XM+50C1y/BHV6vmL0SqSUJC6a59OHEbjbW/kaE=
+github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231128001023-78919424bb16/go.mod h1:K7J0P/gthr32ZkEb/xnrvXD9KTmO5nMUPQ3A0RkfU1A=
+github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231127232749-3effdfac22ef/go.mod h1:4whUzixnrslZDcCPdsRO/+T8wKYepe9Y8Rp4aDlnFDI=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

@@ -17,6 +17,7 @@ import (
 	_ "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan/assignee/descendingResource"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
+	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"
