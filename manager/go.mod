@@ -6,18 +6,18 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 
 require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
-	github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231128014305-c272aecc14ff
-	github.com/datacommand2/cdm-cloud/common v0.0.0-20231127061122-07e02be5bd0c
-	github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231127061639-e680b139acd3
-	github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231116073359-755996e851e1
-	github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231128001023-78919424bb16
-	github.com/golang/protobuf v1.5.3
+	github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231129223458-a3d561877835
+	github.com/datacommand2/cdm-cloud/common v0.0.0-20231128060710-080c7906e48b
+	github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231129020632-c054325b27f7
+	github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231129021537-1dc16b41343b
+	github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129231222-1dbad58532dd
+	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.4.0
-	github.com/jinzhu/copier v0.4.0
+	github.com/jinzhu/copier v0.3.4
 	github.com/jinzhu/gorm v1.9.16
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/pkg/errors v0.9.1
-	google.golang.org/genproto/googleapis/api v0.0.0-20231106174013-bbf56f31fb17
-	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/genproto v0.0.0-20210602131652-f16073e35f0c
+	google.golang.org/grpc v1.44.0
+	google.golang.org/protobuf v1.28.1
 )
