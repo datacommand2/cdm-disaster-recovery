@@ -1,5 +1,5 @@
-//package migrator
-//
+package migrator
+
 //import (
 //	"fmt"
 //	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
