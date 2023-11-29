@@ -1,5 +1,5 @@
-//package snapshot
-//
+package snapshot
+
 //import (
 //	"github.com/datacommand2/cdm-center/cluster-manager/storage"
 //	"github.com/datacommand2/cdm-center/cluster-manager/volume"

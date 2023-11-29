@@ -1,5 +1,5 @@
-//package mirror
-//
+package mirror
+
 //import (
 //	"encoding/json"
 //	"fmt"

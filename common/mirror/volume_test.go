@@ -1,5 +1,5 @@
-//package mirror
-//
+package mirror
+
 //import (
 //	"github.com/datacommand2/cdm-center/cluster-manager/storage"
 //	"github.com/datacommand2/cdm-center/cluster-manager/volume"
