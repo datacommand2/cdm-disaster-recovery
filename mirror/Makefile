@@ -3,7 +3,7 @@
 VERSION ?= "unknown"
 
 build:
-	GOFLAGS='-mod=vendor' GOPRIVATE=10.1.1.220/** GOINSECURE=10.1.1.220/** CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mirrord -v -a -ldflags "-extldflags '-static' -X 'main.version=$(VERSION)'" || exit 1;
+	GOFLAGS='-mod=vendor' CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o mirrord -v -a -ldflags "-extldflags '-static' -X 'main.version=$(VERSION)'" || exit 1;
 
 vendor:
 	GOFLAGS='-mod=vendor' GOPRIVATE=10.1.1.220/** GOINSECURE=10.1.1.220/** go mod tidy

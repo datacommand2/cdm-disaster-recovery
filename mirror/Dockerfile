@@ -1,11 +1,11 @@
-FROM registry.datacommand.co.kr/golang:1.14 as builder
+FROM golang:1.14 as builder
 
 WORKDIR /build
 COPY . .
 
 RUN make clean build
 
-FROM registry.datacommand.co.kr/ceph:v14.2.0
+FROM ceph:v14.2.0
 
 ARG VERSION
 
