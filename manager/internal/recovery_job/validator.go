@@ -2,14 +2,9 @@ package recoveryjob
 
 import (
 	"context"
-	"fmt"
 	cms "github.com/datacommand2/cdm-center/cluster-manager/proto"
 	"github.com/datacommand2/cdm-cloud/common/database"
 	"github.com/datacommand2/cdm-cloud/common/errors"
-	"github.com/datacommand2/cdm-cloud/common/logger"
-	schedulerConstants "github.com/datacommand2/cdm-cloud/services/scheduler/constants"
-	types "github.com/datacommand2/cdm-cloud/services/scheduler/constants"
-	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
@@ -251,7 +246,7 @@ func validateRetryRecoveryJob(req *drms.RetryRecoveryJobRequest) error {
 
 	return nil
 }
-func validateRecoveryJobRequest(ctx context.Context, pgid uint64, job *drms.RecoveryJob) error {
+func validateRecoveryJobRequest(pgid uint64, job *drms.RecoveryJob) error {
 	if job == nil {
 		return errors.RequiredParameter("job")
 	}
@@ -275,161 +270,8 @@ func validateRecoveryJobRequest(ctx context.Context, pgid uint64, job *drms.Reco
 		return errors.UnavailableParameterValue("job.type_code", job.TypeCode, internal.RecoveryJobTypeCodes)
 	}
 
-	// 재해복구는 즉시(schedule == nil) 또는 특정일시(ScheduleTypeSpecified)만 가능
-	if job.TypeCode == constant.RecoveryTypeCodeMigration && job.Schedule != nil && job.Schedule.Type != types.ScheduleTypeSpecified {
-		return errors.InvalidParameterValue("job.schedule.type", job.Schedule.Type, "periodic job is unavailable on migration type")
-	}
-
 	if !internal.IsRecoveryPointTypeCode(job.RecoveryPointTypeCode) {
 		return errors.UnavailableParameterValue("job.recovery_point_type_code", job.RecoveryPointTypeCode, internal.RecoveryPointTypeCodes)
-	}
-
-	return nil
-}
-
-func validateScheduleAddRecoveryJob(ctx context.Context, req *drms.AddRecoveryJobRequest) error {
-	jobs, _, err := GetList(ctx, &drms.RecoveryJobListRequest{
-		GroupId: req.GroupId,
-	})
-	if err != nil {
-		return err
-	}
-
-	for _, job := range jobs {
-		// job id가 같을 경우 check 하지 않음
-		if job.Id == req.Job.Id {
-			continue
-		}
-
-		// plan 이 다를 경우 check 하지 않음
-		if job.Plan.Id != req.Job.Plan.Id {
-			continue
-		}
-
-		// 해당 보호그룹의 재해복구작업이 진행중이거나 재해복구가 특정일시로 예약되어있다면 모의훈련 혹은 재해복구 작업을 생성할 수 없다.
-		if job.TypeCode == constant.RecoveryTypeCodeMigration {
-			return internal.AlreadyMigrationJobRegistered(req.GroupId)
-		}
-
-		// 복구 유형: 즉시
-		if req.Job.Schedule == nil || job.Schedule == nil {
-			return nil
-		}
-
-		// 복구 유형: 둘다 스케줄
-		switch job.Schedule.Type {
-		case types.ScheduleTypeSpecified:
-			break
-
-		default:
-			if job.Schedule.Type != req.Job.Schedule.Type {
-				break
-			}
-
-			if job.Schedule.Type == types.ScheduleTypeHourly && job.Schedule.StartAt != req.Job.Schedule.StartAt {
-				break
-			}
-
-			// 같은 조건의 스케줄을 생성하는 경우
-			if job.Schedule.DayOfMonth == req.Job.Schedule.DayOfMonth &&
-				job.Schedule.DayOfWeek == req.Job.Schedule.DayOfWeek &&
-				job.Schedule.IntervalMonth == req.Job.Schedule.IntervalMonth &&
-				job.Schedule.IntervalWeek == req.Job.Schedule.IntervalWeek &&
-				job.Schedule.IntervalDay == req.Job.Schedule.IntervalDay &&
-				job.Schedule.IntervalHour == req.Job.Schedule.IntervalHour &&
-				job.Schedule.Hour == req.Job.Schedule.Hour &&
-				job.Schedule.Minute == req.Job.Schedule.Minute {
-				return internal.RecoveryJobScheduleConflicted(fmt.Sprintf("%+v", req.Job.Schedule), job.Id, fmt.Sprintf("%+v", job.Schedule))
-			}
-
-		}
-
-		// 복구 유형: 특정일시, 스케줄 (둘다 즉시 아닐때 모두)
-		// 동일한 실행예정 시간으로는 복구 작업을 생성할 수 없다.
-		nextRunTime, err := calculateNextRuntime(ctx, req.Job.Schedule, true)
-		if err != nil {
-			logger.Warnf("[validateScheduleAddRecoveryJob] Could not get job calculate next runtime. Cause: %+v", err)
-		}
-
-		// 기존 job 의 다음 진행 예정시간과 추가할 job 의 진행 예정시간이 같은 경우
-		if job.NextRuntime == nextRunTime {
-			return internal.RecoveryJobScheduleConflicted(fmt.Sprintf("%+v", req.Job.Schedule), job.Id, fmt.Sprintf("%+v", job.Schedule))
-		}
-	}
-
-	return nil
-}
-
-func validateScheduleUpdateRecoveryJob(ctx context.Context, req *drms.UpdateRecoveryJobRequest) error {
-	jobs, _, err := GetList(ctx, &drms.RecoveryJobListRequest{
-		GroupId: req.GroupId,
-	})
-	if err != nil {
-		return err
-	}
-
-	for _, job := range jobs {
-		// job id가 같을 경우 check 하지 않음
-		if job.Id == req.Job.Id {
-			continue
-		}
-
-		// plan 이 다를 경우 check 하지 않음
-		if job.Plan.Id != req.Job.Plan.Id {
-			continue
-		}
-
-		// 이미 존재하는 job 의 수정이기 때문에 job type 에 상관없이 schedule type check 만 한다.
-		// 하지만 정책변화로 아래 조건 필요시 주석 해제
-		// 해당 보호그룹의 재해복구작업이 진행중이거나 재해복구가 특정일시로 예약되어있다면 모의훈련 혹은 재해복구 작업을 생성할 수 없다.
-		//if job.TypeCode == constant.RecoveryTypeCodeMigration {
-		//	return internal.AlreadyMigrationJobRegistered(req.GroupId)
-		//}
-
-		// 복구 유형: 즉시
-		if req.Job.Schedule == nil || job.Schedule == nil {
-			return nil
-		}
-
-		// 복구 유형: 둘다 스케줄
-		switch job.Schedule.Type {
-		case types.ScheduleTypeSpecified:
-			break
-
-		default:
-			if job.Schedule.Type != req.Job.Schedule.Type {
-				break
-			}
-
-			if job.Schedule.Type == types.ScheduleTypeHourly && job.Schedule.StartAt != req.Job.Schedule.StartAt {
-				break
-			}
-
-			// 같은 조건의 스케줄을 생성하는 경우
-			if job.Schedule.DayOfMonth == req.Job.Schedule.DayOfMonth &&
-				job.Schedule.DayOfWeek == req.Job.Schedule.DayOfWeek &&
-				job.Schedule.IntervalMonth == req.Job.Schedule.IntervalMonth &&
-				job.Schedule.IntervalWeek == req.Job.Schedule.IntervalWeek &&
-				job.Schedule.IntervalDay == req.Job.Schedule.IntervalDay &&
-				job.Schedule.IntervalHour == req.Job.Schedule.IntervalHour &&
-				job.Schedule.Hour == req.Job.Schedule.Hour &&
-				job.Schedule.Minute == req.Job.Schedule.Minute {
-				return internal.RecoveryJobScheduleConflicted(fmt.Sprintf("%+v", req.Job.Schedule), job.Id, fmt.Sprintf("%+v", job.Schedule))
-			}
-
-		}
-
-		// 복구 유형: 특정일시, 스케줄
-		// 동일한 실행예정 시간으로는 복구 작업을 생성할 수 없다.
-		nextRunTime, err := calculateNextRuntime(ctx, req.Job.Schedule, true)
-		if err != nil {
-			logger.Warnf("[validateScheduleUpdateRecoveryJob] Could not get job calculate next runtime. Cause: %+v", err)
-		}
-
-		// 기존 job 의 다음 진행 예정시간과 추가할 job 의 진행 예정시간이 같은 경우
-		if job.NextRuntime == nextRunTime {
-			return internal.RecoveryJobScheduleConflicted(fmt.Sprintf("%+v", req.Job.Schedule), job.Id, fmt.Sprintf("%+v", job.Schedule))
-		}
 	}
 
 	return nil
@@ -466,7 +308,7 @@ func ValidateMonitorRecoveryJob(ctx context.Context, req *drms.MonitorRecoveryJo
 	return nil
 }
 
-func checkUpdatableRecoveryJob(ctx context.Context, orig *model.Job, req *drms.UpdateRecoveryJobRequest) error {
+func checkUpdatableRecoveryJob(orig *model.Job, req *drms.UpdateRecoveryJobRequest) error {
 	if req.JobId != req.Job.Id || orig.ID != req.Job.Id {
 		return errors.UnchangeableParameter("job.id")
 	}
@@ -506,21 +348,6 @@ func checkUpdatableRecoveryJob(ctx context.Context, orig *model.Job, req *drms.U
 
 	default:
 		return err
-	}
-
-	s, _, err := getSchedule(ctx, *orig.ScheduleID)
-	if errors.IsIPCFailed(err) {
-		return errors.IPCFailed(err)
-	}
-
-	// 특정일시 스케줄은 특정 일시로만 변경 가능
-	if s.Type == schedulerConstants.ScheduleTypeSpecified && s.Type != req.Job.Schedule.Type {
-		return errors.UnchangeableParameter("job.schedule.type")
-	}
-
-	// 일정 간격 스케줄은 특정 일시를 제외한 스케줄 변경 가능
-	if s.Type != schedulerConstants.ScheduleTypeSpecified && req.Job.Schedule.Type == schedulerConstants.ScheduleTypeSpecified {
-		return errors.UnchangeableParameter("job.schedule.type")
 	}
 
 	return nil

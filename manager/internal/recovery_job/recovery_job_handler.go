@@ -6,8 +6,6 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/errors"
 	"github.com/datacommand2/cdm-cloud/common/logger"
 	"github.com/datacommand2/cdm-cloud/common/store"
-	schedulerConstants "github.com/datacommand2/cdm-cloud/services/scheduler/constants"
-	scheduler "github.com/datacommand2/cdm-cloud/services/scheduler/proto"
 	drCluster "github.com/datacommand2/cdm-disaster-recovery/common/cluster"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
@@ -103,7 +101,7 @@ func cancelJobAndCreateResult(ctx context.Context, job *migrator.RecoveryJob) er
 	var result *drms.RecoveryResult
 
 	// db 에서 job 정리
-	if err = deleteJob(ctx, job); err != nil {
+	if err = deleteJob(job); err != nil {
 		logger.Warnf("[cancelJobAndCreateResult] Could not delete the job(%d) completely. Cause: %+v", job.RecoveryJobID, err)
 	}
 
@@ -130,84 +128,7 @@ func cancelJobAndCreateResult(ctx context.Context, job *migrator.RecoveryJob) er
 	return nil
 }
 
-func calculateNextRunTimeNotDuplicated(ctx context.Context, jobId, pgId, planId, scheduleId uint64) (int64, []int64, error) {
-	var (
-		err             error
-		jobList         []*model.Job
-		schedule        *scheduler.Schedule
-		nextRunTime     int64
-		duplicatedTimes []int64
-	)
-
-	// 스케줄 조회
-	schedule, nextRunTime, err = getSchedule(ctx, scheduleId)
-	if err != nil {
-		logger.Errorf("[calculateNextRunTimeNotDuplicated] Could not get schedule: job(%d) schedule(%d). Cause: %+v", jobId, scheduleId, err)
-		return 0, nil, err
-	}
-
-	// 같은 pgID, planID 로 등록된 job list 조회
-	filters := makeRecoveryJobFilter(&drms.RecoveryJobListRequest{GroupId: pgId, PlanId: planId})
-	if jobList, err = getRecoveryJobList(filters...); err != nil {
-		logger.Warnf("[calculateNextRunTimeNotDuplicated] Could not get the recovery job list. Cause: %+v", err)
-		return nextRunTime, nil, nil
-	}
-
-	if len(jobList) == 0 {
-		return nextRunTime, nil, nil
-	}
-
-	// key: nextRuntime, value: jobID
-	runTimeMap := make(map[int64]uint64)
-	for _, j := range jobList {
-		if j.ID == jobId {
-			continue
-		}
-		runTimeMap[j.NextRuntime] = j.ID
-	}
-
-	for {
-		// 중복되는 nextRunTime 이 있는지 체크
-		if _, ok := runTimeMap[nextRunTime]; !ok {
-			// 중복되는 nextRunTime 이 없음
-			break
-		}
-
-		logger.Infof("[calculateNextRunTimeNotDuplicated] Calculated nextRunTime(%s) is duplicated with job(%d). Calculate again: job(%d) schedule(%d).",
-			timeUnixToString(nextRunTime), runTimeMap[nextRunTime], jobId, scheduleId)
-		duplicatedTimes = append(duplicatedTimes, nextRunTime)
-
-		// 다음 next run time 계산을 위해 현재 중복된 nextRunTime 을 startAt 에 입력
-		schedule.StartAt = nextRunTime
-		if nextRunTime, err = calculateNextRuntime(ctx, schedule, false); err != nil {
-			logger.Warnf("[calculateNextRunTimeNotDuplicated] Could not get next run time: schedule(%d). Cause: %+v", schedule.Id, err)
-			return schedule.StartAt, nil, nil // error 발생시 중복된 nextRunTime 으로 return
-		}
-
-		// 만일 다음 계산을 했음에도 계산값이 이전 계산값과 같다면(bug) for 문의 무한루프 방지를 위해 break
-		if nextRunTime == schedule.StartAt {
-			logger.Warnf("[calculateNextRunTimeNotDuplicated] Calculated next run time result is same as before: schedule(%+v)", schedule)
-			break
-		}
-	}
-
-	if len(duplicatedTimes) > 0 {
-		// 계산된 중복되지 않는 nextRunTime 으로 schedule 이 동작할 수 있게 schedule startAt time 을 update 해준다.
-		schedule.StartAt = nextRunTime
-		nextRunTime, err = updateJobSchedule(ctx, schedule, pgId, jobId, scheduleId)
-		if err != nil {
-			logger.Errorf("[calculateNextRunTimeNotDuplicated] Could not update the schedule: pg(%d) job(%d) plan(%d) schedule(%d). Cause: %+v",
-				pgId, jobId, planId, scheduleId, err)
-			return 0, nil, err
-		}
-		logger.Infof("[calculateNextRunTimeNotDuplicated] Schedule(%d) is updated: job(%d). Cause: nextRunTime(%+v) duplicated.", scheduleId, jobId, duplicatedTimes)
-		reportEvent(ctx, "cdm-dr.manager.during_scheduled_recovery_job_delete.update_schedule", "duplicated_recovery_job_next_run_time", nil)
-	}
-
-	return nextRunTime, duplicatedTimes, nil
-}
-
-func deleteJob(ctx context.Context, job *migrator.RecoveryJob) error {
+func deleteJob(job *migrator.RecoveryJob) error {
 	var err error
 	var jobDetail drms.RecoveryJob
 	if err = job.GetDetail(&jobDetail); err != nil {
@@ -215,78 +136,13 @@ func deleteJob(ctx context.Context, job *migrator.RecoveryJob) error {
 		return err
 	}
 
-	// 즉시실행, 특정일시 예약실행인 경우, 작업 정보가 필요 없으므로 db 에서 job 을 삭제한다.
-	// 스케쥴에 의한 작업 실행인 경우, 해당 시점 스냅샷 정보가 필요 없으므로 db 에서 recovery_point_snapshot_id 을 NULL 로 바꾼다.
-	if jobDetail.Schedule == nil {
-		if err = database.GormTransaction(func(db *gorm.DB) error {
-			return db.Where(&model.Job{ID: jobDetail.Id}).Delete(&model.Job{}).Error
-		}); err != nil {
-			logger.Errorf("[deleteJob] Could not delete job(%d). Cause: %+v", jobDetail.Id, err)
-			return err
-		}
-		logger.Infof("[deleteJob] Done - Job deleted(db): job(%d)", jobDetail.Id)
-
-	} else if jobDetail.Schedule.GetType() == schedulerConstants.ScheduleTypeSpecified {
-		if err = database.GormTransaction(func(db *gorm.DB) error {
-			return db.Where(&model.Job{ID: jobDetail.Id}).Delete(&model.Job{}).Error
-		}); err != nil {
-			logger.Warnf("[deleteJob] Could not delete job(%d). Cause: %+v", jobDetail.Id, err)
-		} else {
-			logger.Infof("[deleteJob] Done - job deleted(db): job(%d) schedule(%d:%s)",
-				jobDetail.Id, jobDetail.Schedule.Id, jobDetail.Schedule.GetType())
-		}
-
-		if err = deleteJobSchedule(ctx, jobDetail.Schedule); err != nil {
-			logger.Errorf("[deleteJob] Could not delete the recovery job(%d) schedule(%d:%s). Cause: %+v",
-				jobDetail.Id, jobDetail.Schedule.Id, jobDetail.Schedule.GetType(), err)
-			return err
-		}
-		logger.Infof("[deleteJob] Done - job schedule deleted: job(%d) schedule(%d:%s)",
-			jobDetail.Id, jobDetail.Schedule.Id, jobDetail.Schedule.GetType())
-
-	} else {
-		var (
-			nextRunTime    int64
-			duplicatedTime []int64
-		)
-
-		// 중복되지 않는 next run time 계산
-		nextRunTime, duplicatedTime, err = calculateNextRunTimeNotDuplicated(ctx, jobDetail.Id, jobDetail.Group.Id, jobDetail.Plan.Id, jobDetail.Schedule.Id)
-		if err != nil {
-			logger.Errorf("[deleteJob] Could not get next run time:job(%d) plan(%d) schedule(%d). Cause: %v")
-			return err
-		}
-
-		if err = database.GormTransaction(func(db *gorm.DB) error {
-			if err = db.Model(&model.Job{}).
-				Where(&model.Job{ID: jobDetail.Id}).
-				Update("recovery_point_snapshot_id", gorm.Expr("NULL")).Error; err != nil {
-				logger.Warnf("[deleteJob] Could not update the recovery job(%d) recovery_point_snapshot_id nil. Cause: %+v", jobDetail.Id, err)
-			} else {
-				logger.Infof("[deleteJob]  Done - Job recovery_point_snapshot_id is updated to nil in db: job(%d).", jobDetail.Id)
-			}
-
-			if err = db.Model(&model.Job{}).
-				Where(&model.Job{ID: jobDetail.Id}).
-				Update("next_runtime", nextRunTime).Error; err != nil {
-				logger.Errorf("[deleteJob] Could not update the recovery job(%d) next_runtime %d. Cause: %+v", jobDetail.Id, nextRunTime, err)
-				return err
-			}
-			logger.Infof("[deleteJob]  Done - Job next_runtime is updated to %s in db: job(%d).", timeUnixToString(nextRunTime), jobDetail.Id)
-
-			return nil
-		}); err != nil {
-			return err
-		}
-
-		for _, startAt := range duplicatedTime {
-			job.TriggeredAt = startAt
-			if _, err = recoveryReport.CreateCanceledJob(ctx, job, constant.RecoveryResultCodeDuplicatedCanceled); err != nil {
-				logger.Warnf("[deleteJob] Could not create recovery result by job auto canceled by duplicated next run time(%s): job(%d). Cause: %v",
-					timeUnixToString(job.TriggeredAt), job.RecoveryJobID, err)
-			}
-		}
+	if err = database.GormTransaction(func(db *gorm.DB) error {
+		return db.Where(&model.Job{ID: jobDetail.Id}).Delete(&model.Job{}).Error
+	}); err != nil {
+		logger.Errorf("[deleteJob] Could not delete job(%d). Cause: %+v", jobDetail.Id, err)
+		return err
 	}
+	logger.Infof("[deleteJob] Done - Job deleted(db): job(%d)", jobDetail.Id)
 
 	return nil
 }
@@ -1390,13 +1246,9 @@ func HandleDoneRecoveryJob(ctx context.Context, job *migrator.RecoveryJob) {
 					return err
 				}
 
-				// 모의 훈련의 실행 타입이 스케줄일 때, 데이터 정리 시간을 10분 - > 5분으로 변경
+				// 데이터 정리 시간을 10분
 				var rollbackTime int64
-				if jobDetail.Schedule != nil && jobDetail.Schedule.GetType() != schedulerConstants.ScheduleTypeSpecified {
-					rollbackTime = scheduleRollbackWaitingTime
-				} else {
-					rollbackTime = defaultRollbackWaitingTime
-				}
+				rollbackTime = defaultRollbackWaitingTime
 
 				// 모든 run task 가 수행된 job 의 count 를 감소시킨다.
 				if err = job.DecreaseRunJobCount(txn); err != nil {
@@ -1999,7 +1851,7 @@ func handleFinishedRecoveryJob(ctx context.Context, job *migrator.RecoveryJob) e
 
 	logger.Infof("[handleFinishedRecoveryJob] Run: job(%d) operation(%s)", job.RecoveryJobID, op.Operation)
 
-	if err = deleteJob(ctx, job); err != nil {
+	if err = deleteJob(job); err != nil {
 		logger.Warnf("[handleFinishedRecoveryJob] Could not delete the job(%d) completely. Cause: %+v", job.RecoveryJobID, err)
 	}
 

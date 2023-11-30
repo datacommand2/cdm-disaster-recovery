@@ -530,15 +530,14 @@ func (h *DisasterRecoveryManagerHandler) AddRecoveryJob(ctx context.Context, req
 		return createError(ctx, "cdm-dr.manager.add_recovery_job.failure-add", err)
 	}
 
-	if req.Job.Schedule == nil {
-		if err = internal.PublishMessage(constant.QueueTriggerRecoveryJob, &internal.ScheduleMessage{
-			ProtectionGroupID: rsp.Job.Group.Id,
-			RecoveryJobID:     rsp.Job.Id,
-		}); err != nil {
-			return createError(ctx, "cdm-dr.manager.add_recovery_job.failure-add", err)
-		}
-		rsp.Job.StateCode = constant.RecoveryJobStateCodePending
+	// 즉시 실행
+	if err = internal.PublishMessage(constant.QueueTriggerRecoveryJob, &internal.ScheduleMessage{
+		ProtectionGroupID: rsp.Job.Group.Id,
+		RecoveryJobID:     rsp.Job.Id,
+	}); err != nil {
+		return createError(ctx, "cdm-dr.manager.add_recovery_job.failure-add", err)
 	}
+	rsp.Job.StateCode = constant.RecoveryJobStateCodePending
 
 	rsp.Message = &drms.Message{Code: "cdm-dr.manager.add_recovery_job.success"}
 	logger.Debug("Respond DisasterRecoveryManager.AddRecoveryJob request")

@@ -9,7 +9,6 @@ import (
 	"github.com/datacommand2/cdm-cloud/common/metadata"
 	"github.com/datacommand2/cdm-cloud/common/store"
 	identity "github.com/datacommand2/cdm-cloud/services/identity/proto"
-	scheduler "github.com/datacommand2/cdm-cloud/services/scheduler/proto"
 	"github.com/datacommand2/cdm-disaster-recovery/common/constant"
 	"github.com/datacommand2/cdm-disaster-recovery/common/database/model"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
@@ -28,8 +27,6 @@ import (
 	"github.com/micro/go-micro/v2/client/grpc"
 
 	"context"
-	"encoding/json"
-	"math"
 )
 
 func getRecoveryJobList(filters ...recoveryJobFilter) ([]*model.Job, error) {
@@ -143,87 +140,6 @@ func getRecoveryJobsPagination(filters ...recoveryJobFilter) (*drms.Pagination, 
 	}, nil
 }
 
-func getSchedule(ctx context.Context, id uint64) (*scheduler.Schedule, int64, error) {
-	cli := scheduler.NewSchedulerService(commonConstant.ServiceScheduler, grpc.NewClient())
-	rsp, err := cli.GetSchedule(ctx, &scheduler.ScheduleRequest{Schedule: &scheduler.Schedule{Id: id}})
-	if errors.IsIPCFailed(err) {
-		return nil, 0, errors.IPCFailed(err)
-	}
-
-	return rsp.Schedule, rsp.NextRuntime, nil
-}
-
-func createJobSchedule(ctx context.Context, s *scheduler.Schedule, pgid, jid uint64) (uint64, int64, error) {
-	b, err := json.Marshal(&internal.ScheduleMessage{
-		ProtectionGroupID: pgid,
-		RecoveryJobID:     jid,
-	})
-	if err != nil {
-		return 0, 0, errors.Unknown(err)
-	}
-
-	s.Topic = constant.QueueTriggerRecoveryJob
-	s.Message = string(b)
-	s.EndAt = math.MaxInt64
-
-	cli := scheduler.NewSchedulerService(commonConstant.ServiceScheduler, grpc.NewClient())
-	rsp, err := cli.CreateSchedule(ctx, &scheduler.ScheduleRequest{Schedule: s})
-	if errors.GetIPCStatusCode(err) == errors.IPCStatusBadRequest {
-		return 0, 0, internal.IPCFailedBadRequest(err)
-	} else if errors.IsIPCFailed(err) {
-		return 0, 0, errors.IPCFailed(err)
-	}
-	return rsp.Schedule.Id, rsp.NextRuntime, nil
-}
-
-func updateJobSchedule(ctx context.Context, s *scheduler.Schedule, pgid, jid, sid uint64) (int64, error) {
-	b, err := json.Marshal(&internal.ScheduleMessage{
-		ProtectionGroupID: pgid,
-		RecoveryJobID:     jid,
-	})
-	if err != nil {
-		return 0, errors.Unknown(err)
-	}
-
-	s.Id = sid
-	s.Topic = constant.QueueTriggerRecoveryJob
-	s.Message = string(b)
-	s.EndAt = math.MaxInt64
-
-	cli := scheduler.NewSchedulerService(commonConstant.ServiceScheduler, grpc.NewClient())
-	rsp, err := cli.UpdateSchedule(ctx, &scheduler.ScheduleRequest{Schedule: s})
-	if errors.GetIPCStatusCode(err) == errors.IPCStatusBadRequest {
-		return 0, internal.IPCFailedBadRequest(err)
-	} else if errors.IsIPCFailed(err) {
-		return 0, errors.IPCFailed(err)
-	}
-
-	return rsp.NextRuntime, nil
-}
-
-func calculateNextRuntime(ctx context.Context, s *scheduler.Schedule, fromNow bool) (int64, error) {
-	s.Topic = constant.QueueTriggerRecoveryJob
-	s.EndAt = math.MaxInt64
-
-	cli := scheduler.NewSchedulerService(commonConstant.ServiceScheduler, grpc.NewClient())
-	rsp, err := cli.CalculateNextRuntime(ctx, &scheduler.ScheduleNextRuntimeRequest{Schedule: s, FromNow: fromNow})
-	if errors.GetIPCStatusCode(err) == errors.IPCStatusBadRequest {
-		return 0, internal.IPCFailedBadRequest(err)
-	} else if errors.IsIPCFailed(err) {
-		return 0, errors.IPCFailed(err)
-	}
-	return rsp.NextRuntime, nil
-}
-
-func deleteJobSchedule(ctx context.Context, s *scheduler.Schedule) error {
-	cli := scheduler.NewSchedulerService(commonConstant.ServiceScheduler, grpc.NewClient())
-	_, err := cli.DeleteSchedule(ctx, &scheduler.ScheduleRequest{Schedule: s})
-	if errors.IsIPCFailed(err) {
-		return errors.IPCFailed(err)
-	}
-	return nil
-}
-
 // GetList 작업목록 조회
 func GetList(ctx context.Context, req *drms.RecoveryJobListRequest) ([]*drms.RecoveryJob, *drms.Pagination, error) {
 	var err error
@@ -266,14 +182,6 @@ func GetList(ctx context.Context, req *drms.RecoveryJobListRequest) ([]*drms.Rec
 		if job.Plan, err = recoveryPlan.GetSimpleInfo(ctx, &drms.RecoveryPlanRequest{GroupId: req.GroupId, PlanId: j.RecoveryPlanID}); err != nil {
 			logger.Errorf("[RecoveryJob-GetList] Could not get the recovery plan(%d): job(%d). Cause: %+v", j.RecoveryPlanID, j.ID, err)
 			return nil, nil, err
-		}
-
-		if j.ScheduleID != nil && *j.ScheduleID != 0 {
-			if job.Schedule, _, err = getSchedule(ctx, *j.ScheduleID); err != nil {
-				logger.Errorf("[RecoveryJob-GetList] Could not get the recovery job(%d) schedule(%d): plan(%d:%s). Cause: %+v",
-					j.ID, *j.ScheduleID, job.Plan.Id, job.Plan.Name, err)
-				return nil, nil, err
-			}
 		}
 
 		if job.StateCode, err = queue.GetJobStatus(j.ID); err != nil {
@@ -369,13 +277,6 @@ func Get(ctx context.Context, req *drms.RecoveryJobRequest) (*drms.RecoveryJob, 
 		}
 	}
 
-	if job.ScheduleID != nil && *job.ScheduleID != 0 {
-		if recoveryJob.Schedule, _, err = getSchedule(ctx, *job.ScheduleID); err != nil {
-			logger.Errorf("[RecoveryJob-Get] Could not get recovery job(%d) schedule(%d). Cause: %+v", job.ID, *job.ScheduleID, err)
-			return nil, err
-		}
-	}
-
 	recoveryJob.StateCode, err = queue.GetJobStatus(job.ID)
 	if err != nil {
 		logger.Errorf("[RecoveryJob-Get] Could not get the recovery job(%d) status. Cause: %+v", job.ID, err)
@@ -407,13 +308,8 @@ func Add(ctx context.Context, req *drms.AddRecoveryJobRequest) (*drms.RecoveryJo
 		return nil, err
 	}
 
-	if err = validateRecoveryJobRequest(ctx, req.GroupId, req.Job); err != nil {
+	if err = validateRecoveryJobRequest(req.GroupId, req.Job); err != nil {
 		logger.Errorf("[RecoveryJob-Add] Errors occurred during validating the request. Cause: %+v", err)
-		return nil, err
-	}
-
-	if err = validateScheduleAddRecoveryJob(ctx, req); err != nil {
-		logger.Errorf("[RecoveryJob-Add] Errors occurred during validating the job schedule. Cause: %+v", err)
 		return nil, err
 	}
 
@@ -455,40 +351,6 @@ func Add(ctx context.Context, req *drms.AddRecoveryJobRequest) (*drms.RecoveryJo
 			logger.Errorf("[RecoveryJob-Add] Could not delete recovery job: plan(%d:%s). Cause: %+v", req.Job.Plan.Id, req.Job.Plan.Name, err)
 		}
 	}()
-
-	if req.Job.Schedule != nil {
-		var (
-			i uint64
-			n int64
-		)
-		i, n, err = createJobSchedule(ctx, req.Job.Schedule, req.GroupId, job.ID)
-		if err != nil {
-			logger.Errorf("[RecoveryJob-Add] Could not create the recovery job(%d) schedule: plan(%d:%s). Cause: %+v",
-				job.ID, req.Job.Plan.Id, req.Job.Plan.Name, err)
-			return nil, err
-		}
-		logger.Infof("[RecoveryJob-Add] Done - create job(%d) schedule(%d)", job.ID, i)
-
-		defer func() {
-			if err == nil {
-				return
-			}
-			if err = deleteJobSchedule(ctx, req.Job.Schedule); err != nil {
-				logger.Warnf("[RecoveryJob-Add] Could not delete job(%d) schedule: plan(%d:%s). Cause: %+v",
-					job.ID, req.Job.Plan.Id, req.Job.Plan.Name, err)
-			}
-		}()
-
-		job.ScheduleID = &i
-		job.NextRuntime = n
-
-		if err = database.GormTransaction(func(db *gorm.DB) error {
-			return db.Save(job).Error
-		}); err != nil {
-			logger.Errorf("[RecoveryJob-Add] Could not add the recovery job: plan(%d:%s). Cause: %+v", req.Job.Plan.Id, req.Job.Plan.Name, err)
-			return nil, errors.UnusableDatabase(err)
-		}
-	}
 
 	var j *drms.RecoveryJob
 	if j, err = Get(ctx, &drms.RecoveryJobRequest{GroupId: req.GroupId, JobId: job.ID}); err != nil {
@@ -587,13 +449,8 @@ func Update(ctx context.Context, req *drms.UpdateRecoveryJobRequest) (*drms.Reco
 		return nil, errors.UnauthorizedRequest(ctx)
 	}
 
-	if err = validateRecoveryJobRequest(ctx, req.GroupId, req.Job); err != nil {
+	if err = validateRecoveryJobRequest(req.GroupId, req.Job); err != nil {
 		logger.Errorf("[RecoveryJob-Update] Errors occurred during validating the request. Cause: %+v", err)
-		return nil, err
-	}
-
-	if err = validateScheduleUpdateRecoveryJob(ctx, req); err != nil {
-		logger.Errorf("[RecoveryJob-Update] Errors occurred during validating the job schedule. Cause: %+v", err)
 		return nil, err
 	}
 
@@ -603,7 +460,7 @@ func Update(ctx context.Context, req *drms.UpdateRecoveryJobRequest) (*drms.Reco
 		return nil, err
 	}
 
-	if err = checkUpdatableRecoveryJob(ctx, orig, req); err != nil {
+	if err = checkUpdatableRecoveryJob(orig, req); err != nil {
 		logger.Errorf("[RecoveryJob-Update] Errors occurred during checking updatable status of the recovery job(%d). Cause: %+v", req.JobId, err)
 		return nil, err
 	}
@@ -616,33 +473,7 @@ func Update(ctx context.Context, req *drms.UpdateRecoveryJobRequest) (*drms.Reco
 		}
 	}
 
-	// 함수 실패 시 스케줄러 원상 복구를 위해 임시 저장
-	s, _, err := getSchedule(ctx, *orig.ScheduleID)
-	if err != nil {
-		logger.Errorf("[RecoveryJob-Update] Could not get the recovery job schedule(%d). Cause: %+v", *orig.ScheduleID, err)
-		return nil, err
-	}
-
-	n, err := updateJobSchedule(ctx, req.Job.Schedule, req.GroupId, orig.ID, *orig.ScheduleID)
-	if err != nil {
-		logger.Errorf("[RecoveryJob-Update] Could not update the recovery job(%d) schedule(%d). Cause: %+v", orig.ID, *orig.ScheduleID, err)
-		return nil, err
-	}
-	logger.Infof("[RecoveryJob-Update] Done - update job(%d) schedule(%d)", orig.ID, *orig.ScheduleID)
-
-	defer func() {
-		if err == nil {
-			return
-		}
-
-		// 함수 실패 시 스케줄러 정보 원상 복구
-		if _, e := updateJobSchedule(ctx, s, req.GroupId, orig.ID, *orig.ScheduleID); e != nil {
-			logger.Warnf("[RecoveryJob-Update] Could not rollback job schedule(%d). Cause: %+v", orig.ScheduleID, e)
-		}
-	}()
-
 	orig.RecoveryPointTypeCode = req.Job.RecoveryPointTypeCode
-	orig.NextRuntime = n
 
 	if err = database.GormTransaction(func(db *gorm.DB) error {
 		return db.Save(&orig).Error
@@ -746,19 +577,6 @@ func Delete(ctx context.Context, req *drms.RecoveryJobRequest, opts ...bool) err
 		err = internal.UndeletableRecoveryJob(req.GroupId, req.JobId, status)
 		logger.Errorf("[RecoveryJob-Delete] Could not delete: job(%d) status(%s) forceFlag(%t). Cause: %+v", job.ID, status, forceDelete, err)
 		return err
-	}
-
-	if job.ScheduleID != nil && *job.ScheduleID != 0 {
-		// schedule 이 없는 경우 이미 없으므로 pass
-		s, _, err := getSchedule(ctx, *job.ScheduleID)
-		if err == nil {
-			if err = deleteJobSchedule(ctx, s); err != nil {
-				logger.Warnf("[RecoveryJob-Delete] Could not delete the recovery job(%d) schedule(%d). Cause: %+v", job.ID, *job.ScheduleID, err)
-			}
-			logger.Infof("[RecoveryJob-Delete] Done - delete job(%d) schedule(%d)", job.ID, *job.ScheduleID)
-		} else {
-			logger.Warnf("[RecoveryJob-Delete] Could not get the recovery job(%d) schedule(%d). Cause: %+v", job.ID, *job.ScheduleID, err)
-		}
 	}
 
 	if err = database.GormTransaction(func(db *gorm.DB) error {

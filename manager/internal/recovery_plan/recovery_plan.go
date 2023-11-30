@@ -1992,7 +1992,7 @@ func startVolumeMirroring(plan *drms.RecoveryPlan, volID uint64) error {
 			VolumeID:   volumePlan.ProtectionClusterVolume.Id,
 			VolumeUUID: volumePlan.ProtectionClusterVolume.Uuid,
 		},
-		SourceAgent: &cdmReplicator.Agent{
+		SourceAgent: &mirror.Agent{
 			IP:   instancePlan.ProtectionClusterInstance.Hypervisor.IpAddress,
 			Port: uint(instancePlan.ProtectionClusterInstance.Hypervisor.AgentPort),
 		},
