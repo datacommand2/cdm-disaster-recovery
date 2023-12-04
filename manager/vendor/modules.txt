@@ -86,7 +86,7 @@ github.com/datacommand2/cdm-cloud/common/util
 # github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231129020632-c054325b27f7
 ## explicit
 github.com/datacommand2/cdm-cloud/services/identity/proto
-# github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204013449-9f6a80c77da4
+# github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204064754-344255cd3029
 ## explicit
 github.com/datacommand2/cdm-disaster-recovery/common/cluster
 github.com/datacommand2/cdm-disaster-recovery/common/constant
