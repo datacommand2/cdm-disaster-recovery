@@ -11,7 +11,6 @@ import (
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
-	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/snapshot"
 	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 )
 
@@ -75,30 +74,22 @@ func (b *TaskBuilder) buildVolumeCopyTask(ctx context.Context, txn store.Txn, pl
 	}
 
 	volumeMetadata = make(map[string]string)
-	if b.RecoveryJob.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-		// 재해복구의 최신 데이터로 복구시에는 snapshot 의 metadata 정보가 아닌 현재 등록된 metadata 를 가져와야한다.
-		mv := &mirror.Volume{
-			SourceClusterStorage: &storage.ClusterStorage{StorageID: storagePlan.ProtectionClusterStorage.Id},
-			TargetClusterStorage: &storage.ClusterStorage{StorageID: storagePlan.RecoveryClusterStorage.Id},
-			SourceVolume:         &volume.ClusterVolume{VolumeID: plan.ProtectionClusterVolume.Id},
-		}
+	// 재해복구의 최신 데이터로 복구시에는 snapshot 의 metadata 정보가 아닌 현재 등록된 metadata 를 가져와야한다.
+	mv := &mirror.Volume{
+		SourceClusterStorage: &storage.ClusterStorage{StorageID: storagePlan.ProtectionClusterStorage.Id},
+		TargetClusterStorage: &storage.ClusterStorage{StorageID: storagePlan.RecoveryClusterStorage.Id},
+		SourceVolume:         &volume.ClusterVolume{VolumeID: plan.ProtectionClusterVolume.Id},
+	}
 
-		metadata, err := mv.GetTargetMetadata()
-		if err != nil {
-			logger.Errorf("[buildVolumeCopyTask] Could not get volume metadata: cluster(%d) volume(%d) job(%d) plan(%d).",
-				plan.ProtectionClusterVolume.Cluster.Id, plan.ProtectionClusterVolume.Id, b.RecoveryJob.RecoveryJobID, b.RecoveryJobDetail.Plan.Id)
-			return "", err
-		}
+	metadata, err := mv.GetTargetMetadata()
+	if err != nil {
+		logger.Errorf("[buildVolumeCopyTask] Could not get volume metadata: cluster(%d) volume(%d) job(%d) plan(%d).",
+			plan.ProtectionClusterVolume.Cluster.Id, plan.ProtectionClusterVolume.Id, b.RecoveryJob.RecoveryJobID, b.RecoveryJobDetail.Plan.Id)
+		return "", err
+	}
 
-		for k, v := range metadata {
-			volumeMetadata[k] = fmt.Sprint(v)
-		}
-
-	} else { // RecoveryPointTypeCodeLatestSnapshot, RecoveryPointTypeCodeSnapshot 일때
-		volumeMetadata, err = snapshot.GetVolumeSnapshotMetadata(ctx, b.RecoveryJobDetail.Plan.Id, b.RecoveryJob.RecoveryPointSnapshot.GetId(), plan.ProtectionClusterVolume.Id)
-		if err != nil {
-			return "", err
-		}
+	for k, v := range metadata {
+		volumeMetadata[k] = fmt.Sprint(v)
 	}
 
 	input.TargetMetadata = volumeMetadata

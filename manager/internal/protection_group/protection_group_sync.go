@@ -1175,7 +1175,7 @@ func updateVolumeRecoveryPlanList(plan *model.Plan, volumeMap map[uint64]*instan
 				continue
 			}
 
-			if deleteVolumeRecoveryPlan(db, plan.ID, volumePlan); err != nil {
+			if err = deleteVolumeRecoveryPlan(db, plan.ID, volumePlan); err != nil {
 				return err
 			}
 		}
@@ -1295,12 +1295,6 @@ func updateInstanceRecoveryPlanList(ctx context.Context, plan *model.Plan, insta
 
 			reportEvent(ctx, "cdm-dr.manager.update_instance_recovery_plan_list_for_sync.success-plan_deleted_by_protection_instance_deleted", "", err)
 			logger.Infof("[updateInstanceRecoveryPlanList] Success to delete the recovery plan(%d).", plan.ID)
-
-			// 재해복구계획의 모든 스냅샷을 제거한다.
-			if err = recoveryPlan.DeletePlanSnapshot(plan.ProtectionGroupID, plan.ID); err != nil {
-				logger.Errorf("[updateInstanceRecoveryPlanList] Could not delete all snapshots of the recovery plan(%d:%s). Cause: %+v", plan.ID, plan.Name, err)
-				return err
-			}
 
 		} else if err != nil {
 			return errors.UnusableDatabase(err)

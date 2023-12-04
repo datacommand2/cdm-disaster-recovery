@@ -227,25 +227,7 @@ func validateRecoveryJobListRequest(req *drms.RecoveryJobListRequest) error {
 
 	return nil
 }
-func validateRetryRecoveryJob(req *drms.RetryRecoveryJobRequest) error {
-	if req.GetGroupId() == 0 {
-		return errors.RequiredParameter("group_id")
-	}
 
-	if req.GetJobId() == 0 {
-		return errors.RequiredParameter("job_id")
-	}
-
-	if req.GetRecoveryPointSnapshot() == nil {
-		return errors.RequiredParameter("recovery_point_snapshot")
-	}
-
-	if req.GetInstances() == nil {
-		return errors.RequiredParameter("instances")
-	}
-
-	return nil
-}
 func validateRecoveryJobRequest(pgid uint64, job *drms.RecoveryJob) error {
 	if job == nil {
 		return errors.RequiredParameter("job")
@@ -319,15 +301,6 @@ func checkUpdatableRecoveryJob(orig *model.Job, req *drms.UpdateRecoveryJobReque
 
 	if orig.TypeCode != req.Job.TypeCode {
 		return errors.UnchangeableParameter("job.type_code")
-	}
-
-	// 실행중이거나 대기열에 추가된 작업은 수정할 수 없으므로 즉시실행은 수정할 수 없다.
-	if orig.ScheduleID == nil {
-		return internal.UnchangeableRecoveryJob(req.GroupId, req.JobId)
-	}
-
-	if req.Job.Schedule == nil {
-		return errors.RequiredParameter("job.schedule")
 	}
 
 	unlock, err := internal.RecoveryJobStoreTryLock(req.JobId)

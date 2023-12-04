@@ -56,19 +56,6 @@ func pauseVolumeMirror(volume *planVolume) error {
 	return nil
 }
 
-func resumeVolumeMirror(volume *planVolume) error {
-	v, err := mirror.GetVolume(volume.protectionStorageID, volume.recoveryStorageID, volume.volumeID)
-	if err != nil {
-		return err
-	}
-
-	if err := v.SetOperation(constant.MirrorVolumeOperationResume); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func waitVolumeMirrorPaused(volume *planVolume) error {
 	timeout := time.After(time.Second * MirrorVolumeGetPauseStateTimeout)
 
@@ -171,31 +158,6 @@ func pausePlanVolumes(plan *drms.RecoveryPlan) error {
 	logger.Infof("[pausePlanVolumes] Success: plan(%d:%s)", plan.Id, plan.GetName())
 	return nil
 }
-
-// TODO : failover 상황에서는 mirror 를 resume 할 일이 없음. migration 때 추가
-//func resumePlanVolumes(plan *drms.RecoveryPlan) {
-//	for _, vol := range plan.GetDetail().GetVolumes() {
-//		protectionStorageID := vol.GetProtectionClusterVolume().GetStorage().GetId()
-//		recoveryStorageID := vol.GetRecoveryClusterStorage().GetId()
-//		if recoveryStorageID == 0 {
-//			storagePlan := internal.GetStorageRecoveryPlan(plan, protectionStorageID)
-//			if storagePlan == nil {
-//				logger.Warnf("Could not resume volume mirroring. Cause: +v", internal.NotFoundStorageRecoveryPlan(plan.Id, protectionStorageID))
-//				continue
-//			}
-//			recoveryStorageID = storagePlan.RecoveryClusterStorage.Id
-//		}
-//
-//		volume := &planVolume{
-//			protectionStorageID: protectionStorageID,
-//			recoveryStorageID:   recoveryStorageID,
-//			volumeID:            vol.GetProtectionClusterVolume().GetId(),
-//		}
-//		if err := resumeVolumeMirror(volume); err != nil {
-//			logger.Warnf("Could not resume volume mirroring. Cause: +v", err)
-//		}
-//	}
-//}
 
 // checkRecoveryClusterHypervisorResource 복구대상으로 지정된 하이퍼바이저의 리소스가 모두 충분한지 확인
 func checkRecoveryClusterHypervisorResource(ctx context.Context, job *drms.RecoveryJob) error {

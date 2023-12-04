@@ -92,10 +92,6 @@ func (r *recoveryResult) createRecoveryResult() error {
 		r.RecoveryResult.WarningFlag = true
 	}
 
-	if r.JobDetail.Schedule != nil {
-		r.RecoveryResult.ScheduleType = &r.JobDetail.Schedule.Type
-	}
-
 	if err := database.Execute(func(db *gorm.DB) error {
 		return db.Create(r.RecoveryResult).Error
 	}); err != nil {

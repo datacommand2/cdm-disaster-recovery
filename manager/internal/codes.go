@@ -162,10 +162,6 @@ func IsRecoveryJobResult(result string) bool {
 var RecoveryPointTypeCodes = []interface{}{
 	// 최신 데이터
 	constant.RecoveryPointTypeCodeLatest,
-	// 최신 스냅샷
-	constant.RecoveryPointTypeCodeLatestSnapshot,
-	// 특정 스냅샷(즉시 실행)
-	constant.RecoveryPointTypeCodeSnapshot,
 }
 
 // IsRecoveryPointTypeCode 재해 복구 시점 종류 확인

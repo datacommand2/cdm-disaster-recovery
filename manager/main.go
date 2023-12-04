@@ -12,7 +12,6 @@ import (
 	_ "github.com/datacommand2/cdm-disaster-recovery/manager/controller/check_recovery_job_controller"
 	_ "github.com/datacommand2/cdm-disaster-recovery/manager/controller/cluster_event_controller"
 	_ "github.com/datacommand2/cdm-disaster-recovery/manager/controller/mirror_volume_controller"
-	_ "github.com/datacommand2/cdm-disaster-recovery/manager/controller/snapshot_controller"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/handler"
 	_ "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan/assignee/descendingResource"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/proto"
@@ -60,8 +59,6 @@ func main() {
 		"CDM_SOLUTION_NAME":       constant.SolutionName,
 		"CDM_SERVICE_DESCRIPTION": constant.ServiceManagerDescription,
 	}
-
-	common.Init(common.WithPersistentQueue(constant.QueueAddProtectionGroupSnapshot))
 
 	service := micro.NewService(
 		micro.Name(constant.ServiceManagerName),

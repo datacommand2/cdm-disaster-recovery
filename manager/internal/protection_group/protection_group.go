@@ -796,16 +796,6 @@ func checkValidInstanceUpdateProtectionGroup(ctx context.Context, pg *drms.Prote
 	return nil
 }
 
-func createSnapshotSchedule(ctx context.Context, pgid uint64, intervalType string, interval uint32) (uint64, error) {
-	// TODO : Not implemented
-	return 0, nil
-}
-
-func updateSnapshotSchedule(ctx context.Context, sid, pgid uint64, intervalType string, interval uint32) error {
-	// TODO : Not implemented
-	return nil
-}
-
 // Add 보호그룹 등록
 func Add(ctx context.Context, req *drms.AddProtectionGroupRequest) (*drms.ProtectionGroup, error) {
 	logger.Info("[ProtectionGroup-Add] Start")
@@ -873,20 +863,6 @@ func Add(ctx context.Context, req *drms.AddProtectionGroupRequest) (*drms.Protec
 			return db.Delete(pg).Error
 		}); err != nil {
 			logger.Errorf("[ProtectionGroup-Add] Could not delete protection group(%d:%s) during rollback. Cause: %+v", pg.ID, pg.Name, err)
-		}
-	}()
-
-	if pg.SnapshotScheduleID, err = createSnapshotSchedule(ctx, pg.ID, req.Group.SnapshotIntervalType, req.Group.SnapshotInterval); err != nil {
-		logger.Errorf("[ProtectionGroup-Add] Could not create the snapshot schedule of the protection group(%d:%s). Cause: %+v", pg.ID, pg.Name, err)
-		return nil, err
-	}
-
-	defer func() {
-		if err == nil {
-			return
-		}
-		if e := deleteSnapshotSchedule(ctx, pg.SnapshotScheduleID); e != nil {
-			logger.Errorf("[ProtectionGroup-Add] Could not delete the snapshot schedule(%d) of the protection group(%d:%s). Cause: %+v", pg.SnapshotScheduleID, pg.ID, pg.Name, e)
 		}
 	}()
 
@@ -1103,7 +1079,7 @@ func Update(ctx context.Context, req *drms.UpdateProtectionGroupRequest) (*drms.
 		if err == nil {
 			return
 		}
-		database.GormTransaction(func(db *gorm.DB) error {
+		_ = database.GormTransaction(func(db *gorm.DB) error {
 			if err = db.Save(&origPG).Error; err != nil {
 				logger.Errorf("[ProtectionGroup-Update] Could not update the protection group(%d:%s) db. Cause: %+v", pg.ID, pg.Name, err)
 				return err
@@ -1131,11 +1107,6 @@ func Update(ctx context.Context, req *drms.UpdateProtectionGroupRequest) (*drms.
 
 	logger.Infof("[ProtectionGroup-Update] Success: group(%d:%s)", pg.ID, pg.Name)
 	return rsp, err
-}
-
-func deleteSnapshotSchedule(ctx context.Context, id uint64) error {
-	// TODO: Not Implemented
-	return nil
 }
 
 func checkDeletableProtectionGroup(pg *model.ProtectionGroup) error {
@@ -1183,10 +1154,6 @@ func Delete(ctx context.Context, req *drms.DeleteProtectionGroupRequest) error {
 		return err
 	}
 
-	if err = deleteSnapshotSchedule(ctx, pg.SnapshotScheduleID); err != nil {
-		logger.Warnf("[ProtectionGroup-Delete] Could not delete the snapshot schedule(%d) of the protection group(%d:%s). Cause: %+v", pg.SnapshotScheduleID, pg.ID, pg.Name, err)
-	}
-
 	if err = database.GormTransaction(func(db *gorm.DB) error {
 		if err = db.Where(&model.ProtectionInstance{ProtectionGroupID: pg.ID}).Delete(&model.ProtectionInstance{}).Error; err != nil {
 			logger.Errorf("[ProtectionGroup-Delete] Could not delete the protection instance of the protection group(%d:%s). Cause: %+v", pg.ID, pg.Name, err)
@@ -1202,20 +1169,10 @@ func Delete(ctx context.Context, req *drms.DeleteProtectionGroupRequest) error {
 		return errors.UnusableDatabase(err)
 	}
 
-	if err = deleteProtectionGroupSnapshot(pg.ID); err != nil {
-		logger.Errorf("[ProtectionGroup-Delete] Could not delete the all snapshots of the protection group(%d:%s). Cause: %+v", pg.ID, pg.Name, err)
-		return err
-	}
-
 	if err = migrator.DeleteAllFailbackProtectionGroup(req.GroupId); err != nil {
 		logger.Warnf("[ProtectionGroup-Delete] Could not delete failback protection group info: protection group(%d). Cause: %+v", req.GroupId, err)
 	}
 
 	logger.Infof("[ProtectionGroup-Delete] Success: group(%d:%s)", pg.ID, pg.Name)
 	return nil
-}
-
-// GetSnapshotList 보호 그룹 스냅샷 목록 조회
-func GetSnapshotList(ctx context.Context, req *drms.ProtectionGroupSnapshotListRequest) ([]*drms.ProtectionGroupSnapshot, error) {
-	return nil, nil
 }

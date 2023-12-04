@@ -2015,23 +2015,6 @@ func startVolumesMirroring(plan *drms.RecoveryPlan) error {
 	return nil
 }
 
-// CreateProtectionGroupSnapshot 보호 그룹 스냅샷 생성 이벤트를 publish 한다.
-func CreateProtectionGroupSnapshot(pgID uint64) error {
-	return nil
-}
-
-// DeletePlanSnapshot 보호 그룹 스냅샷 삭제 이벤트를 publish 한다.
-func DeletePlanSnapshot(pgID, pID uint64) error {
-	if err := internal.PublishMessage(constant.QueueDeletePlanSnapshot, &model.Plan{
-		ID:                pID,
-		ProtectionGroupID: pgID,
-	}); err != nil {
-		return errors.UnusableBroker(err)
-	}
-
-	return nil
-}
-
 // Add 재해 복구 계획을 추가하는 함수
 func Add(ctx context.Context, req *drms.AddRecoveryPlanRequest) (*drms.RecoveryPlan, error) {
 	logger.Infof("[RecoveryPlan-Add] Start")
@@ -2128,15 +2111,9 @@ func Add(ctx context.Context, req *drms.AddRecoveryPlanRequest) (*drms.RecoveryP
 		if err == nil {
 			return
 		}
-		deletePlan(p.ID)
+		_ = deletePlan(p.ID)
 	}()
 
-	// TODO: hypervisor 자동할당 사용시 주석 제거
-	//if err = reassignHypervisorByPlan(ctx, db, req.Plan); err != nil {
-	//	return nil, err
-	//}
-
-	// TODO: 모든 항목에 대해 동기화
 	var plan *drms.RecoveryPlan
 	if plan, err = Get(ctx, &drms.RecoveryPlanRequest{GroupId: p.ProtectionGroupID, PlanId: p.ID}); err != nil {
 		logger.Errorf("[RecoveryPlan-Add] Could not get the recovery plan(%d). Cause: %+v", p.ID, err)
@@ -2312,13 +2289,8 @@ func Update(ctx context.Context, req *drms.UpdateRecoveryPlanRequest) (*drms.Rec
 		if err == nil {
 			return
 		}
-		updatePlan(origPlan, origDetail)
+		_ = updatePlan(origPlan, origDetail)
 	}()
-
-	// TODO: hypervisor 자동할당 사용시 주석 제거
-	//if err = reassignHypervisorByPlan(ctx, req.Plan); err != nil {
-	//	return nil, err
-	//}
 
 	// 롤백을 위해 임시 저장
 	var updatedPlan *drms.RecoveryPlan
@@ -2648,12 +2620,6 @@ func Delete(ctx context.Context, req *drms.RecoveryPlanRequest, typeCodes ...str
 	}
 
 	if err = deletePlan(req.PlanId); err != nil {
-		return err
-	}
-
-	// 재해복구계획의 모든 스냅샷을 제거한다.
-	if err = DeletePlanSnapshot(req.GroupId, req.PlanId); err != nil {
-		logger.Errorf("[RecoveryPlan-Delete] Could not delete all snapshots of the recovery plan(%d:%s). Cause: %+v", plan.Id, plan.Name, err)
 		return err
 	}
 

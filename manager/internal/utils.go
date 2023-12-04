@@ -267,7 +267,7 @@ func StopVolumeMirroring(v *mirror.Volume, op string) error {
 		return nil
 	}
 
-	if err := store.Transaction(func(txn store.Txn) error {
+	if err = store.Transaction(func(txn store.Txn) error {
 		// source volume 을 mirroring 하고 있는 target reference count 를 감소시킨다.
 		if err := v.DecreaseRefCount(txn); err != nil {
 			logger.Errorf("[StopVolumeMirroring] Could not decrease the reference count(volumeID:%d). Cause: %+v", v.SourceVolume.VolumeID, err)

@@ -27,9 +27,7 @@ import (
 )
 
 const (
-	defaultPausingTime                = 60 * 60 // 60 minute
 	defaultRollbackWaitingTime        = 60 * 60 // 60 minute
-	scheduleRollbackWaitingTime       = 5 * 60  // 5 minute
 	defaultRecoveryJobHandlerInterval = 3
 )
 
@@ -327,12 +325,6 @@ func getJobInstanceResultSummary(job *migrator.RecoveryJob) (successCount int, f
 	}
 
 	return successCount, failedCount, nil
-}
-
-// 보호그룹의 최신 스냅샷을 반환한다.
-func getLatestSnapshot(ctx context.Context, gid uint64) (*drms.ProtectionGroupSnapshot, error) {
-	// TODO: Not implemented
-	return nil, nil
 }
 
 // plan 의 대기중이거나 예약된 모의훈련을 모두 취소하고, 모의훈련 스케쥴들을 삭제한다.
@@ -723,18 +715,6 @@ func deleteUnusedRecoveryPlans(ctx context.Context, jobDetail *drms.RecoveryJob)
 func deleteUsedProtectionGroupAndRecoveryPlan(ctx context.Context, jobDetail *drms.RecoveryJob) error {
 	logger.Infof("[deleteUsedProtectionGroupAndRecoveryPlan] Start: group(%d) plan(%d)", jobDetail.Group.Id, jobDetail.Plan.Id)
 
-	//var op string
-	//if jobDetail.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-	//	if doUseReplicator(jobDetail) {
-	//		op = constant.MirrorVolumeOperationStopAndDelete
-	//	} else {
-	//		op = constant.MirrorVolumeOperationStop
-	//	}
-	//} else {
-	//	op = constant.MirrorVolumeOperationStopAndDelete
-	//}
-
-	logger.Infof("[deleteUsedProtectionGroupAndRecoveryPlan] - %s", jobDetail.RecoveryPointTypeCode)
 	if err := recoveryPlan.Delete(ctx, &drms.RecoveryPlanRequest{
 		GroupId: jobDetail.Group.Id,
 		PlanId:  jobDetail.Plan.Id,
@@ -875,10 +855,6 @@ func handleConfirmRecoveryJob(ctx context.Context, job *migrator.RecoveryJob) er
 		if err = excludeProtectionInstances(ctx, &jobDetail, result); err != nil {
 			return err
 		}
-	}
-
-	if job.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-		return nil
 	}
 
 	return nil
@@ -1138,12 +1114,6 @@ func monitorRunningRecoveryJob(job *migrator.RecoveryJob) (bool, error) {
 		return false, nil
 	}
 
-	// FIXME: Pause 기능을 지금 사용하지 않음.
-	//if op.Operation == constant.RecoveryJobOperationPause {
-	//	logger.Infof("[handleRunningRecoveryJob] Run next - SetJobStatePaused: job(%d) operation(%s)", job.RecoveryJobID, op.Operation)
-	//	return store.Transaction(func(txn store.Txn) error {return queue.SetJobStatePaused(txn, job, defaultPausingTime)})
-	//}
-
 	return false, nil
 }
 
@@ -1313,58 +1283,6 @@ func HandleCancelingRecoveryJob(ctx context.Context, job *migrator.RecoveryJob) 
 		}
 	}
 }
-
-// operation 이 run 인 재해복구작업의 state 를 running 으로 변경
-// operation 이 cancel 인 재해복구작업의 state 를 canceling 으로 변경
-// pause timeout 이 발생한 재해복구작업의 state 를 running 으로 변경
-//func handlePausedRecoveryJob(job *migrator.RecoveryJob, status *migrator.RecoveryJobStatus) error {
-//	return store.Transaction(func(txn store.Txn) error {
-//		op, err := job.GetOperation()
-//		if err != nil {
-//			logger.Errorf("[handlePausedRecoveryJob] Could not get job operation: dr.recovery.job/%d/operation. Cause: %+v", job.RecoveryJobID, err)
-//			return err
-//		}
-//
-//		logger.Infof("[handlePausedRecoveryJob] Run: job(%d) operation(%d)", job.RecoveryJobID, op.Operation)
-//
-//		if op.Operation == constant.RecoveryJobOperationCancel {
-//			logger.Infof("[handlePausedRecoveryJob] Run next - SetJobStateCanceling: job(%d)", job.RecoveryJobID)
-//			return queue.SetJobStateCanceling(txn, job)
-//		}
-//
-//		if op.Operation == constant.RecoveryJobOperationRun {
-//			logger.Infof("[handlePausedRecoveryJob] Run next - SetJobStateRunningByResume: job(%d)", job.RecoveryJobID)
-//			return queue.SetJobStateRunningByResume(txn, job)
-//		}
-//
-//		if op.Operation != constant.RecoveryJobOperationPause {
-//			logger.Errorf("[handlePausedRecoveryJob] Unexpected job(%d) operation: %s", job.RecoveryJobID, op.Operation)
-//			return internal.UnexpectedJobOperation(job.RecoveryJobID, constant.RecoveryJobStateCodePaused, op.Operation)
-//		}
-//
-//		now := time.Now().Unix()
-//		if status.ResumeAt <= now {
-//			logger.Infof("[handlePausedRecoveryJob] status.ResumeAt(%+v) <= now(%+v)", time.Unix(status.ResumeAt, 0), time.Unix(now, 0))
-//			if err := job.SetOperation(txn, constant.RecoveryJobOperationRun); err != nil {
-//				logger.Errorf("[handlePausedRecoveryJob] Could not set job operation: dr.recovery.job/%d/operation. Cause: %+v", job.RecoveryJobID, err)
-//				return err
-//			}
-//			logger.Infof("[handlePausedRecoveryJob] Done - set operation: dr.recovery.job/%d/operation {%s}", job.RecoveryJobID, constant.RecoveryJobOperationRun)
-//
-//			if err = internal.PublishMessage(constant.QueueRecoveryJobMonitor, migrator.RecoveryJobMessage{
-//				JobID:     job.RecoveryJobID,
-//				Operation: &migrator.RecoveryJobOperation{Operation: constant.RecoveryJobOperationRun},
-//			}); err != nil {
-//				logger.Warnf("[handlePausedRecoveryJob] Could not publish job(%d) operation. Cause: %+v", job.RecoveryJobID, err)
-//			}
-//			logger.Infof("[handlePausedRecoveryJob] Run next - SetJobStateRunningByResume: job(%d)", job.RecoveryJobID)
-//			return queue.SetJobStateRunningByResume(txn, job)
-//		}
-//
-//		logger.Infof("[handlePausedRecoveryJob] Done: group(%d) job(%d)", job.ProtectionGroupID, job.RecoveryJobID)
-//		return nil
-//	})
-//}
 
 // monitorCompletedRecoveryJob operation 이 retry 인 재해복구작업의 state 를 running 으로 변경하고, operation 을 run 으로 변경 (부분 재시도)
 // operation 이 rollback 인 재해복구작업의 state 를 clearing 으로 변경
@@ -1854,25 +1772,6 @@ func handleFinishedRecoveryJob(ctx context.Context, job *migrator.RecoveryJob) e
 	if err = deleteJob(job); err != nil {
 		logger.Warnf("[handleFinishedRecoveryJob] Could not delete the job(%d) completely. Cause: %+v", job.RecoveryJobID, err)
 	}
-
-	//if job.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-	//	// 최신데이터로 모의훈련을 진행한 작업인 경우, 사용한(생성한) 스냅샷을 제거한다.
-	//	// 최신데이터로 재해복구을 진행한 작업이고 operation 이 확정이 아닌 경우 인스턴스의 볼륨들의 mirroring 을 재개한다.
-	//	// finish 단계에 올 수 있는 작업의 operation 은 confirm, rollback, ignore-rollback 이 있다.
-	//
-	//	// 최신 데이터로 모의훈련은 지원하지 않음
-	//	if job.RecoveryJobTypeCode == constant.RecoveryTypeCodeSimulation {
-	//		if err := snapshot.DeleteSnapshot(job.ProtectionGroupID, job.RecoveryPointSnapshot.Id); err != nil {
-	//			return err
-	//		}
-	//	}
-	//
-	//	// protection cluster 가 재해 상황이므로 이므로 resume 할 수 없음
-	//	else if job.RecoveryJobTypeCode == constant.RecoveryTypeCodeMigration &&
-	//		op.Operation != constant.RecoveryJobOperationConfirm {
-	//		resumePlanVolumes(jobDetail.Plan)
-	//	}
-	//}
 
 	// 재해복구 확정인 경우, 확정에 대한 처리를 진행한다.
 	if op.Operation == constant.RecoveryJobOperationConfirm {

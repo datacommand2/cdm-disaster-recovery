@@ -293,7 +293,6 @@ func (h *DisasterRecoveryManagerHandler) RecoveryJobStatusMonitor(e broker.Event
 			TypeCode:              msg.Detail.TypeCode,
 			RecoveryPointTypeCode: msg.Detail.RecoveryPointTypeCode,
 			RecoveryPointSnapshot: msg.Detail.RecoveryPointSnapshot,
-			Schedule:              msg.Detail.Schedule,
 			NextRuntime:           msg.Detail.NextRuntime,
 			OperationCode:         msg.Detail.OperationCode,
 			StateCode:             msg.Detail.StateCode,

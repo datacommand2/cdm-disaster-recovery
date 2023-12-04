@@ -236,76 +236,20 @@ func (h *DisasterRecoveryManagerHandler) DeleteProtectionGroup(ctx context.Conte
 }
 
 // GetProtectionGroupSnapshotList 보호 그룹 스냅샷 목록 조회
-func (h *DisasterRecoveryManagerHandler) GetProtectionGroupSnapshotList(ctx context.Context, req *drms.ProtectionGroupSnapshotListRequest, rsp *drms.ProtectionGroupSnapshotListResponse) error {
-	logger.Debug("Received DisasterRecoveryManager.GetProtectionGroupSnapshotList request")
-
-	var err error
-	defer func() {
-		if err != nil {
-			logger.Errorf("[Handler-GetProtectionGroupSnapshotList] Could not get protection group snapshot list. Cause: %+v", err)
-		}
-	}()
-
-	if err = validateRequest(ctx); err != nil {
-		return createError(ctx, "cdm-dr.manager.get_protection_group_snapshot_list.failure-validate_request", err)
-	}
-
-	if rsp.Snapshots, err = protectionGroup.GetSnapshotList(ctx, req); err != nil {
-		return createError(ctx, "cdm-dr.manager.get_protection_group_snapshot_list.failure-get", err)
-	}
-
-	if len(rsp.Snapshots) == 0 {
-		return createError(ctx, "cdm-dr.manager.get_protection_group_snapshot_list.success-get", errors.ErrNoContent)
-	}
-
-	rsp.Message = &drms.Message{Code: "cdm-dr.manager.get_protection_group_snapshot_list.success"}
-	logger.Debug("Respond DisasterRecoveryManager.GetProtectionGroupSnapshotList request")
-	return errors.StatusOK(ctx, "cdm-dr.manager.get_protection_group_snapshot_list.success", nil)
+func (h *DisasterRecoveryManagerHandler) GetProtectionGroupSnapshotList(_ context.Context, _ *drms.ProtectionGroupSnapshotListRequest, _ *drms.ProtectionGroupSnapshotListResponse) error {
+	// TODO: Not Implemented
+	return nil
 }
 
 // AddProtectionGroupSnapshotQueue 보호 그룹 스냅샷 추가를 대기열에 추가하는 함수
-func (h *DisasterRecoveryManagerHandler) AddProtectionGroupSnapshotQueue(ctx context.Context, req *drms.ProtectionGroupSnapshotRequest, rsp *drms.ProtectionGroupSnapshotMessageResponse) error {
-	logger.Debug("Received DisasterRecoveryManager.AddProtectionGroupSnapshotQueue request")
-
-	var err error
-	defer func() {
-		if err != nil {
-			logger.Errorf("[Handler-AddProtectionGroupSnapshotQueue] Could not add protection group(%d) snapshot queue. Cause: %+v", req.GetGroupId(), err)
-		} else {
-			logger.Infof("[Handler-AddProtectionGroupSnapshotQueue] Success to add protection group(%d) snapshot queue.", req.GetGroupId())
-		}
-	}()
-
-	if err = validateRequest(ctx); err != nil {
-		return createError(ctx, "cdm-dr.manager.add_protection_group_snapshot_queue.failure-validate_request", err)
-	}
-
-	if err = recoveryPlan.CreateProtectionGroupSnapshot(req.GetGroupId()); err != nil {
-		return createError(ctx, "cdm-dr.manager.add_protection_group_snapshot_queue.failure-add", err)
-	}
-
-	rsp.Message = &drms.Message{Code: "cdm-dr.manager.add_protection_group_snapshot_queue.success"}
-	logger.Debug("Respond DisasterRecoveryManager.AddProtectionGroupSnapshotQueue request")
-	return errors.StatusOK(ctx, "cdm-dr.manager.add_protection_group_snapshot_queue.success", nil)
+func (h *DisasterRecoveryManagerHandler) AddProtectionGroupSnapshotQueue(_ context.Context, _ *drms.ProtectionGroupSnapshotRequest, _ *drms.ProtectionGroupSnapshotMessageResponse) error {
+	// TODO: Not Implemented
+	return nil
 }
 
 // DeleteProtectionGroupSnapshot 보호 그룹 스냅샷 삭제
-func (h *DisasterRecoveryManagerHandler) DeleteProtectionGroupSnapshot(ctx context.Context, req *drms.DeleteProtectionGroupSnapshotRequest, rsp *drms.DeleteProtectionGroupSnapshotResponse) error {
-	logger.Debug("Received DisasterRecoveryManager.DeleteProtectionGroupSnapshot request")
-
-	var err error
-	defer func() {
-		if err != nil {
-			logger.Errorf("[Handler-DeleteProtectionGroupSnapshot] Could not delete protection group snapshot. Cause: %+v", err)
-		}
-	}()
-
-	if err = protectionGroup.DeleteSnapshot(ctx, req); err != nil {
-		return createError(ctx, "cdm-dr.manager.delete_protection_group_snapshot.failure-delete", err)
-	}
-
-	rsp.Message = &drms.Message{Code: "cdm-dr.manager.delete_protection_group_snapshot.success"}
-	logger.Debug("Respond DisasterRecoveryManager.DeleteProtectionGroupSnapshot request")
+func (h *DisasterRecoveryManagerHandler) DeleteProtectionGroupSnapshot(_ context.Context, _ *drms.DeleteProtectionGroupSnapshotRequest, _ *drms.DeleteProtectionGroupSnapshotResponse) error {
+	//TODO: Not implemented
 	return nil
 }
 

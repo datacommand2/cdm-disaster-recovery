@@ -10,9 +10,7 @@ import (
 	"github.com/datacommand2/cdm-disaster-recovery/manager/internal"
 	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"github.com/jinzhu/gorm"
-	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/client/grpc"
-	"time"
 )
 
 // DefaultClusterManagerService ClusterManagerService
@@ -409,19 +407,6 @@ func GetClusterVolume(ctx context.Context, cid, id uint64) (*cms.ClusterVolume, 
 	}
 
 	return rsp.GetVolume(), nil
-}
-
-// SyncClusterVolumeSnapshotList 클러스터 볼륨 스냅샷을 동기화하기위한 함수이다.
-func SyncClusterVolumeSnapshotList(ctx context.Context, cid uint64) error {
-	// TODO: client.WithRequestTimeout(time.Minute)는 디버깅을 위해 임시로 추가 된 코드. 스냅샷이 생성되기 이전에 작업에서 발생하는 지연들은 최소화되야하므로 디버깅후 지워야함.
-	_, err := DefaultClusterManagerService.SyncClusterVolumeSnapshotList(ctx, &cms.SyncClusterVolumeSnapshotListRequest{
-		Cluster: &cms.Cluster{Id: cid},
-	}, client.WithRequestTimeout(time.Minute))
-	if err != nil {
-		return errors.IPCFailed(err)
-	}
-
-	return nil
 }
 
 // IsAccessibleCluster 는 접근 가능한 클러스터인지 확인하는 함수이다.

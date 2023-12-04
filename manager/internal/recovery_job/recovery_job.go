@@ -18,7 +18,6 @@ import (
 	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_job/queue"
 	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_job/queue/builder"
 	recoveryPlan "github.com/datacommand2/cdm-disaster-recovery/manager/internal/recovery_plan"
-	"github.com/datacommand2/cdm-disaster-recovery/manager/internal/snapshot"
 	drms "github.com/datacommand2/cdm-disaster-recovery/manager/proto"
 	"time"
 
@@ -84,11 +83,6 @@ func getProtectionGroup(id, tid uint64) (*model.ProtectionGroup, error) {
 		return nil, errors.UnusableDatabase(err)
 	}
 	return &m, nil
-}
-
-func getProtectionGroupSnapshot(ctx context.Context, pgid, pgsid uint64) (*drms.ProtectionGroupSnapshot, error) {
-	//TODO: Not implemented
-	return nil, nil
 }
 
 func getOperator(ctx context.Context, id uint64) (*identity.SimpleUser, error) {
@@ -250,31 +244,10 @@ func Get(ctx context.Context, req *drms.RecoveryJobRequest) (*drms.RecoveryJob, 
 		return nil, err
 	}
 
-	// TODO: plan snapshot 의 plan 을 가져오는 경우 해당 snapshot 이 생성되는 시점 의 plan update flag 가 반영되어 현시점 기준의 plan 상태와 맞지 않게 되므로 이 부분 수정 필요
-	if recoveryJob.RecoveryPointSnapshot != nil {
-		recoveryJob.Plan, err = snapshot.GetPlanSnapshot(ctx, req.GroupId, recoveryJob.RecoveryPointSnapshot.Id, job.RecoveryPlanID)
-		if err != nil {
-			logger.Errorf("[RecoveryJob-Get] Could not get the recovery plan(%d): job(%d). Cause: %+v", job.RecoveryPlanID, job.ID, err)
-			return nil, err
-		}
-
-		var mirroring []*drms.Message
-		recoveryJob.Plan.MirrorStateCode, mirroring, err = recoveryPlan.GetVolumeMirrorStateCode(recoveryJob.Plan.Detail.Volumes)
-		if err != nil {
-			logger.Errorf("[RecoveryJob-Get] Could not get the recovery plan(%d) mirror state: job(%d). Cause: %+v", job.RecoveryPlanID, job.ID, err)
-			return nil, err
-		}
-
-		if len(mirroring) > 0 {
-			recoveryJob.Plan.AbnormalStateReasons.Mirroring = mirroring
-		}
-
-	} else {
-		recoveryJob.Plan, err = recoveryPlan.Get(ctx, &drms.RecoveryPlanRequest{GroupId: req.GroupId, PlanId: job.RecoveryPlanID})
-		if err != nil {
-			logger.Errorf("[RecoveryJob-Get] Could not get the recovery plan(%d): job(%d). Cause: %+v", job.RecoveryPlanID, job.ID, err)
-			return nil, err
-		}
+	recoveryJob.Plan, err = recoveryPlan.Get(ctx, &drms.RecoveryPlanRequest{GroupId: req.GroupId, PlanId: job.RecoveryPlanID})
+	if err != nil {
+		logger.Errorf("[RecoveryJob-Get] Could not get the recovery plan(%d): job(%d). Cause: %+v", job.RecoveryPlanID, job.ID, err)
+		return nil, err
 	}
 
 	recoveryJob.StateCode, err = queue.GetJobStatus(job.ID)
@@ -384,33 +357,30 @@ func Add(ctx context.Context, req *drms.AddRecoveryJobRequest) (*drms.RecoveryJo
 		}
 	}
 
-	// 재해 복구 작업 시점이 최신 데이터 일 경우
 	// 보호 그룹의 인스턴스 목록이 재해 복구 계획에 인스턴스 목록과 일치 하는지 확인 한다.
-	if j.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-		for _, i := range j.Plan.Detail.Instances {
-			var matched = false
-			for _, v := range j.Group.Instances {
-				matched = matched || (v.Id == i.GetProtectionClusterInstance().GetId())
-			}
-
-			if !matched {
-				err = internal.DifferentInstanceList(req.GetGroupId(), req.GetJob().GetPlan().GetId())
-				logger.Errorf("[RecoveryJob-Add] Errors occurred during checking the instance list. Cause: %+v", err)
-				return nil, err
-			}
+	for _, i := range j.Plan.Detail.Instances {
+		var matched = false
+		for _, v := range j.Group.Instances {
+			matched = matched || (v.Id == i.GetProtectionClusterInstance().GetId())
 		}
 
-		for _, i := range j.Group.Instances {
-			var matched = false
-			for _, v := range j.Plan.Detail.Instances {
-				matched = matched || (i.Id == v.GetProtectionClusterInstance().GetId())
-			}
+		if !matched {
+			err = internal.DifferentInstanceList(req.GetGroupId(), req.GetJob().GetPlan().GetId())
+			logger.Errorf("[RecoveryJob-Add] Errors occurred during checking the instance list. Cause: %+v", err)
+			return nil, err
+		}
+	}
 
-			if !matched {
-				err = internal.DifferentInstanceList(req.GetGroupId(), req.GetJob().GetPlan().GetId())
-				logger.Errorf("[RecoveryJob-Add] Errors occurred during checking the instance list. Cause: %+v", err)
-				return nil, err
-			}
+	for _, i := range j.Group.Instances {
+		var matched = false
+		for _, v := range j.Plan.Detail.Instances {
+			matched = matched || (i.Id == v.GetProtectionClusterInstance().GetId())
+		}
+
+		if !matched {
+			err = internal.DifferentInstanceList(req.GetGroupId(), req.GetJob().GetPlan().GetId())
+			logger.Errorf("[RecoveryJob-Add] Errors occurred during checking the instance list. Cause: %+v", err)
+			return nil, err
 		}
 	}
 
@@ -1012,8 +982,9 @@ func Rollback(ctx context.Context, req *drms.RecoveryJobRequest, jobTypeCode str
 }
 
 // RetryRollback 재해복구작업 롤백을 재시도한다.
-func RetryRollback(ctx context.Context, req *drms.RecoveryJobRequest) error {
+func RetryRollback(_ context.Context, req *drms.RecoveryJobRequest) error {
 	logger.Infof("[RecoveryJob-RetryRollback] Start: job(%d)", req.GetJobId())
+	// TODO: Not Implemented
 	return nil
 }
 
@@ -1068,8 +1039,9 @@ func Confirm(ctx context.Context, req *drms.RecoveryJobRequest) error {
 }
 
 // RetryConfirm 재해복구작업 확정을 재시도한다.
-func RetryConfirm(ctx context.Context, req *drms.RecoveryJobRequest) error {
+func RetryConfirm(_ context.Context, req *drms.RecoveryJobRequest) error {
 	logger.Infof("[RecoveryJob-RetryConfirm] Start: job(%d)", req.GetJobId())
+	// TODO: Not Implemented
 	return nil
 }
 
@@ -1124,8 +1096,9 @@ func CancelConfirm(ctx context.Context, req *drms.RecoveryJobRequest) error {
 }
 
 // Retry 재해복구작업을 재시도한다.
-func Retry(ctx context.Context, req *drms.RetryRecoveryJobRequest) error {
+func Retry(_ context.Context, req *drms.RetryRecoveryJobRequest) error {
 	logger.Infof("[RecoveryJob-Retry] Start: job(%d)", req.GetJobId())
+	// TODO: Not Implemented
 	return nil
 }
 
@@ -1375,14 +1348,10 @@ func GetRecoveryClusterHypervisorResources(ctx context.Context, req *drms.Recove
 		return nil, false, err
 	}
 
-	if req.RecoveryPointTypeCode == constant.RecoveryPointTypeCodeLatest {
-		// 최신 데이터
-		plan, err = recoveryPlan.Get(ctx, &drms.RecoveryPlanRequest{GroupId: req.GroupId, PlanId: req.PlanId})
-		if err != nil {
-			return nil, false, err
-		}
-	} else {
-		return nil, false, nil
+	// 최신 데이터
+	plan, err = recoveryPlan.Get(ctx, &drms.RecoveryPlanRequest{GroupId: req.GroupId, PlanId: req.PlanId})
+	if err != nil {
+		return nil, false, err
 	}
 
 	hypervisorMap := make(map[uint64]*drms.RecoveryHypervisorResource)
