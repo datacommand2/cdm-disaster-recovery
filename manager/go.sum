@@ -123,13 +123,12 @@ github.com/datacommand2/cdm-cloud/common v0.0.0-20231128060710-080c7906e48b/go.m
 github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231127060302-5d9100aec13c/go.mod h1:/4eYWqbuqBp8hagkjytyMvXqFZagoicuH9iGU1bZ854=
 github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231129020632-c054325b27f7 h1:zpEmKcyX6zFAByQfHGZvLdRyPsDrMWRjCEzA+GFdzDM=
 github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231129020632-c054325b27f7/go.mod h1:jHe5PquhlIm5UIEuDPW9avEZL7lUOyrqeQcrlildlzQ=
-github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231129021537-1dc16b41343b h1:HQZAUsC356Hb4lvJj40/dQmhX0sL81VRMTCRn2fqkOw=
 github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231129021537-1dc16b41343b/go.mod h1:DVVUXGPwJmoaPJXIBb4vo1NSUYB9n4w3/P/xpDnlb64=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129065503-7cad00c52cc9/go.mod h1:N0OSD7KGWiZk0AiUgC7YwHutG+ErnQwleP/1fZs+JZE=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129231222-1dbad58532dd/go.mod h1:o7KVjxtT5FArEVOZbc3xZiHReGYdhE9TNgLGYau0ffk=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129233138-279c03db8ad2/go.mod h1:uAE3CbKK4OBUC4n+jnhk0OxQX+W3u9BgnZeCU4HP9aQ=
-github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231130024644-7eb6f8f56caf h1:pK4W9opKIpk42+b7Yw9jSErhMo/FXdGuef/bwJhUy0A=
-github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231130024644-7eb6f8f56caf/go.mod h1:ePlaYU/a4uWcuByh4arZzE+9TrViqeHqtMLnjLS/LTk=
+github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204013449-9f6a80c77da4 h1:Q+zdhlDjoBVJ0kAfY5mPtg6uOQ2Yq2XxTXzAglub+rk=
+github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204013449-9f6a80c77da4/go.mod h1:ePlaYU/a4uWcuByh4arZzE+9TrViqeHqtMLnjLS/LTk=
 github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231129232117-0168f1f49c94/go.mod h1:y9r5EB3uWNtcHd2HT1tN7Qo6/5O7IlG0154qaq1jKaQ=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
