@@ -7,7 +7,6 @@ import (
 	"github.com/datacommand2/cdm-disaster-recovery/common/cluster"
 	"github.com/datacommand2/cdm-disaster-recovery/common/migrator"
 	"github.com/datacommand2/cdm-disaster-recovery/common/mirror"
-	"github.com/datacommand2/cdm-disaster-recovery/common/snapshot"
 )
 
 // CreateError 각 서비스의 internal error 를 처리
@@ -130,15 +129,6 @@ func CreateError(ctx context.Context, eventCode string, err error) error {
 
 	case errors.Equal(err, migrator.ErrNotFoundKey):
 		errorCode = "not_found_key"
-		return errors.StatusInternalServerError(ctx, eventCode, errorCode, err)
-
-	// snapshot
-	case errors.Equal(err, snapshot.ErrNotFoundMirrorVolume):
-		errorCode = "not_found_mirror_volume"
-		return errors.StatusInternalServerError(ctx, eventCode, errorCode, err)
-
-	case errors.Equal(err, snapshot.ErrNotFoundMirrorVolumeTargetMetadata):
-		errorCode = "not_found_mirror_volume_target_metadata"
 		return errors.StatusInternalServerError(ctx, eventCode, errorCode, err)
 
 	// cluster
