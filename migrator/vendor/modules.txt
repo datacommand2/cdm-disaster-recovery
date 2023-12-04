@@ -83,7 +83,7 @@ github.com/datacommand2/cdm-cloud/common/test/helper
 github.com/datacommand2/cdm-cloud/services/identity/proto
 # github.com/datacommand2/cdm-cloud/services/scheduler v0.0.0-20231129021537-1dc16b41343b
 github.com/datacommand2/cdm-cloud/services/scheduler/proto
-# github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231130024644-7eb6f8f56caf
+# github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204013449-9f6a80c77da4
 ## explicit
 github.com/datacommand2/cdm-disaster-recovery/common/constant
 github.com/datacommand2/cdm-disaster-recovery/common/database/model
