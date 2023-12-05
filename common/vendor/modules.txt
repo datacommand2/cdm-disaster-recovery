@@ -22,13 +22,13 @@ github.com/coreos/go-semver/semver
 github.com/coreos/go-systemd/journal
 # github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f
 github.com/coreos/pkg/capnslog
-# github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231130024214-fbee9b4bc6e4
+# github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231205061410-2104dd818640
 ## explicit
 github.com/datacommand2/cdm-center/cluster-manager/database/model
 github.com/datacommand2/cdm-center/cluster-manager/proto
 github.com/datacommand2/cdm-center/cluster-manager/storage
 github.com/datacommand2/cdm-center/cluster-manager/volume
-# github.com/datacommand2/cdm-cloud/common v0.0.0-20231128060710-080c7906e48b
+# github.com/datacommand2/cdm-cloud/common v0.0.0-20231205042820-988cc8ba20e0
 ## explicit
 github.com/datacommand2/cdm-cloud/common/broker
 github.com/datacommand2/cdm-cloud/common/constant
@@ -41,7 +41,7 @@ github.com/datacommand2/cdm-cloud/common/store
 github.com/datacommand2/cdm-cloud/common/sync
 github.com/datacommand2/cdm-cloud/common/sync/internal/etcd
 github.com/datacommand2/cdm-cloud/common/util
-# github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231129020632-c054325b27f7
+# github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231205055758-216c42add282
 ## explicit
 github.com/datacommand2/cdm-cloud/services/identity/proto
 # github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231204060700-d1433b29f7b4
