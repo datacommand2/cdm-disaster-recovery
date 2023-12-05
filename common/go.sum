@@ -105,8 +105,9 @@ github.com/cpuguy83/go-md2man/v2 v2.0.0/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsr
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231129223458-a3d561877835/go.mod h1:pMDm/Wllodab7BNV8S+2bMpDhGRaCATsS7G5wtH3x9M=
 github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231130024214-fbee9b4bc6e4/go.mod h1:E96IkzdpWinnH7Q2C+aQN30l7k2dZwmPXc4GZFUya3s=
-github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231205061410-2104dd818640 h1:nOf6wnjOs2S6EyFVNzVdDepWOHIqW6UpwMQcySCtVOU=
 github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231205061410-2104dd818640/go.mod h1:v6OcUCc7SGs0wxH0Y8k3r2KDW1KWwRv/ddCiZALlTTQ=
+github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231205064454-47d81f9d15b3 h1:wj6CDYJ0JJLBRIIsKDBBOCc8Krw+dvMA4ll8XnUHpHg=
+github.com/datacommand2/cdm-center/cluster-manager v0.0.0-20231205064454-47d81f9d15b3/go.mod h1:4X3ZxlzTw4vcE2ZyGD2GVniZ2NB8J8I3XxjBAoDZAfY=
 github.com/datacommand2/cdm-cloud/common v0.0.0-20231127055611-c20cbc4911cf/go.mod h1:ggpahxiri74mk826mLikJI/Ep6LsQ+ey5ZAFoY1TIMI=
 github.com/datacommand2/cdm-cloud/common v0.0.0-20231128060710-080c7906e48b/go.mod h1:TfpYDvr+YhsGDCvnfScKhNbIbrwY+6YMIbzhoSxBQns=
 github.com/datacommand2/cdm-cloud/common v0.0.0-20231205042820-988cc8ba20e0 h1:uIuegnJDRzKOeuIx4pVUFqiZaAP/IO0b6eE9UMHebcE=
@@ -121,6 +122,7 @@ github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129231222-1dbad
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231129233138-279c03db8ad2/go.mod h1:uAE3CbKK4OBUC4n+jnhk0OxQX+W3u9BgnZeCU4HP9aQ=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231204013449-9f6a80c77da4/go.mod h1:ePlaYU/a4uWcuByh4arZzE+9TrViqeHqtMLnjLS/LTk=
 github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231205062758-cc7da979405b/go.mod h1:aCfHQ8HW8w56dS14353m404El2B76MiajqNk4P/VBrc=
+github.com/datacommand2/cdm-disaster-recovery/common v0.0.0-20231205063919-03a5c85c5c04/go.mod h1:zZguHRyXBxMZemKYdKCesM7EjhpEr/CYBI2raIrKJtE=
 github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231129232117-0168f1f49c94/go.mod h1:y9r5EB3uWNtcHd2HT1tN7Qo6/5O7IlG0154qaq1jKaQ=
 github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231204060700-d1433b29f7b4/go.mod h1:+uudBxd0tOfS/lWvTQjXgMsDtWpCtSQqJ4uknJogV48=
 github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231205063538-005af25e81e4 h1:0xLR8yZe/dGKoWi01v7poDn9CUr42h9WhszPOOQ9v24=
