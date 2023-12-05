@@ -44,7 +44,7 @@ github.com/datacommand2/cdm-cloud/common/util
 # github.com/datacommand2/cdm-cloud/services/identity v0.0.0-20231205055758-216c42add282
 ## explicit
 github.com/datacommand2/cdm-cloud/services/identity/proto
-# github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231204060700-d1433b29f7b4
+# github.com/datacommand2/cdm-disaster-recovery/manager v0.0.0-20231205063538-005af25e81e4
 ## explicit
 github.com/datacommand2/cdm-disaster-recovery/manager/proto
 # github.com/davecgh/go-spew v1.1.1
